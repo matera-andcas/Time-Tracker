@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Time Tracker
+Comment=Gerenciador de tempo por card
+Exec=/home/anderson.castro/Matera/workspace/timeTracker/run.sh
+Icon=/home/anderson.castro/.local/share/icons/tempo.png
+Terminal=false
+StartupNotify=true
+StartupWMClass=timeTracker
+Categories=Development;Utility;
+Keywords=time;tracker;productivity;

@@ -1,0 +1,110 @@
+╔══════════════════════════════════════════════════════════════╗
+║                   TIME TRACKER - INÍCIO RÁPIDO               ║
+╚══════════════════════════════════════════════════════════════╝
+
+📦 INSTALAÇÃO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Instalar python3-venv (se necessário):
+   $ sudo apt install python3-venv python3-full
+
+2. Instalar dependências (cria ambiente virtual):
+   $ ./install.sh
+   
+   OU manualmente:
+   $ python3 -m venv venv
+   $ source venv/bin/activate
+   $ pip install PyQt6
+
+
+▶️  EXECUTAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   $ ./run.sh
+   
+   OU
+   
+   $ python3 main.py
+
+
+🎯 USO BÁSICO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. ➕ ADICIONAR CARD
+   → Clique em "➕ Adicionar Card"
+   → Digite o nome do card (ex: CADCT-1301)
+
+2. ▶️  INICIAR TIMER
+   → Clique no botão verde ▶
+   → O timer começa a contar
+   → Hora inicial é preenchida automaticamente
+
+3. ⏸  PAUSAR TIMER
+   → Clique no botão vermelho ⏸
+   → O timer pausa (tempo é mantido)
+   → Hora final é preenchida automaticamente
+
+4. 🗑️  DELETAR CARDS
+   → Selecione os cards desejados (checkbox)
+   → Clique em "🗑 Deletar Selecionados"
+
+
+✨ FUNCIONALIDADES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Múltiplos timers independentes
+✅ Play/Pause para cada card
+✅ Tempo no formato HH:MM:SS
+✅ Registro automático de horários
+✅ Seleção individual ou em massa
+✅ Edição inline do nome do card
+✅ Interface moderna e responsiva
+
+
+🧪 TESTAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   $ python3 test.py
+
+
+📚 DOCUMENTAÇÃO COMPLETA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+• README.md  → Visão geral e instalação
+• GUIA.md    → Guia detalhado de uso
+• main.py    → Código da interface
+• models.py  → Modelo de dados
+
+
+🐛 PROBLEMAS?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Erro "externally-managed-environment":
+   → Use ambiente virtual (já incluído no install.sh)
+   $ ./install.sh
+
+python3-venv não encontrado:
+   $ sudo apt install python3-venv python3-full
+
+PyQt6 não encontrado:
+   $ source venv/bin/activate
+   $ pip install PyQt6
+
+Verificar instalação:
+   $ source venv/bin/activate
+   $ python3 -c "import PyQt6; print('OK!')"
+
+Permissões dos scripts:
+   $ chmod +x install.sh run.sh
+
+
+💡 DICAS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+→ Vários timers podem rodar simultaneamente
+→ Pausar e retomar mantém o tempo acumulado
+→ Use "Select All" para operações em massa
+→ Os dados ficam em memória durante a execução
+
+
+Desenvolvido com ❤️  para produtividade no Linux
