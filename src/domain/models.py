@@ -1,5 +1,5 @@
 """
-Modelo de dados para os Cards de Time Tracking
+Domain Models - Core business entities
 """
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -18,7 +18,7 @@ class Card:
     end_time: Optional[str] = None
     is_selected: bool = False
     timer: Optional[QElapsedTimer] = field(default=None, repr=False, compare=False)
-    _db_id: Optional[int] = None  # ID real do banco de dados
+    _db_id: Optional[int] = None
     
     def __post_init__(self):
         """Inicializa o card após criação"""
@@ -41,7 +41,6 @@ class Card:
         """Inicia o timer do card"""
         if not self.is_running:
             self.is_running = True
-            # Só preenche hora inicial se for a primeira vez
             if self.start_time is None:
                 self.start_time = datetime.now().strftime("%H:%M")
             self.end_time = None
@@ -54,7 +53,6 @@ class Card:
         if self.is_running and self.timer:
             self.is_running = False
             self.end_time = datetime.now().strftime("%H:%M")
-            # Acumula o tempo decorrido
             self.elapsed_seconds += self.timer.elapsed() // 1000
             self.timer = None
     
@@ -88,7 +86,7 @@ class Card:
             'elapsed_seconds': self.get_current_elapsed_seconds() if self.is_running else self.elapsed_seconds,
             'start_time': self.start_time,
             'end_time': self.end_time,
-            'is_running': False  # Sempre salva como pausado
+            'is_running': False
         }
     
     @staticmethod
@@ -100,7 +98,7 @@ class Card:
             elapsed_seconds=data['elapsed_seconds'],
             start_time=data['start_time'],
             end_time=data['end_time'],
-            is_running=False  # Sempre carrega como pausado
+            is_running=False
         )
         card._db_id = data['id']
         return card

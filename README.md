@@ -1,6 +1,6 @@
 # Time Tracker ⏱️
 
-Aplicação desktop **leve, rápida e moderna** para gerenciamento de tempo por card, desenvolvida para Linux.
+Aplicação desktop **leve, rápida e moderna** para gerenciamento de tempo por card, para Linux e desenvolvida 100% por IA.
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![PyQt6](https://img.shields.io/badge/PyQt6-6.6.0-green.svg)
@@ -13,22 +13,25 @@ O Time Tracker é uma ferramenta de produtividade que permite controlar o tempo 
 ## ✨ Características
 
 - 🚀 **Leve e Rápida**: Aplicação nativa com PyQt6
-- 🎨 **Interface Moderna**: Design limpo e profissional
 - ⏱️ **Timers Independentes**: Controle múltiplos cards simultaneamente
 - 🕐 **Registro Automático**: Horários de início e fim preenchidos automaticamente
 - ☑️ **Seleção em Massa**: Select All para operações rápidas
-- 💾 **Zero Configuração**: Funciona direto após instalação
+- 💾 **Persistência SQLite**: Dados salvos automaticamente em banco de dados
+- 🔗 **Links Clicáveis**: URLs são detectadas e abrem no navegador
+- 🌓 **Tema Escuro/Claro**: Alterne entre temas com preferência salva
 
 ## 🎯 Funcionalidades
 
-- ✅ **Adicionar cards** com nomes personalizados (ex: CADCT-1301)
+- ✅ **Adicionar cards** com nomes personalizados ou URLs
 - ▶️ **Play/Pause** para cada card independentemente
 - ⏱️ **Timer preciso** no formato HH:MM:SS
 - 🕐 **Hora inicial** preenchida ao clicar em Play
 - 🕐 **Hora final** preenchida ao clicar em Pause
-- ☑️ **Seleção individual ou em massa** de cards
 - 🗑️ **Exclusão** de cards selecionados
 - ✏️ **Edição** do nome do card a qualquer momento
+- 💾 **Auto-save** - Dados salvos a cada 5 segundos
+- 🌓 **Tema escuro/claro** - Preferência salva entre sessões
+- 📅 **Data automática** - Dia atual exibido para cada card
 
 ## 📦 Requisitos
 
@@ -76,74 +79,53 @@ pip install PyQt6
 python3 main.py
 ```
 
-## 📖 Guia de Uso
-
-### Interface Principal
-
-| Coluna | Descrição |
-|--------|-----------|
-| ☑ | Checkbox para selecionar o card |
-| **Card** | Campo editável com o nome do card |
-| ▶ | Botão Play (verde) - Inicia o timer |
-| ⏸ | Botão Pause (vermelho) - Pausa o timer |
-| **Tempo** | Contador HH:MM:SS |
-| **Hr Inicial** | Preenchida automaticamente ao iniciar |
-| **Hr Final** | Preenchida automaticamente ao pausar |
-
-### Fluxo de Trabalho
-
-1. **Adicionar Card**: Clique em "➕ Adicionar Card"
-2. **Nomear**: Digite o identificador (ex: ISSUE-123)
-3. **Iniciar**: Clique no botão ▶ verde
-4. **Trabalhar**: O timer conta automaticamente
-5. **Pausar**: Clique no botão ⏸ vermelho
-6. **Continuar**: Clique em ▶ novamente para retomar
 
 ### Dicas
 
 - 💡 Vários timers podem rodar ao mesmo tempo
 - 💡 O tempo é acumulado ao pausar e retomar
 - 💡 Use "Select All" para operações em massa
-- 💡 Os dados ficam em memória durante a execução
+- 💡 Cole uma URL no campo Card e ela vira link clicável
+- 💡 Duplo-clique em um link para editá-lo
+- 💡 Os dados são salvos automaticamente no SQLite
 
-## 🏗️ Estrutura do Projeto
+## 🏗️ Arquitetura do Projeto (MVC)
 
 ```
 timeTracker/
-├── main.py              # Interface gráfica (PyQt6)
-├── models.py            # Modelo de dados do Card
-├── card_manager.py      # Lógica de gerenciamento
-├── test.py              # Testes unitários
-├── requirements.txt     # Dependências
-├── install.sh           # Script de instalação
-├── run.sh              # Script de execução
-├── timetracker.desktop  # Atalho para desktop
-├── README.md           # Este arquivo
-└── GUIA.md             # Guia detalhado
+├── src/
+│   ├── domain/              # MODEL - Entidades e lógica de negócio
+│   │   ├── models.py        # Entidade Card
+│   │   └── services.py      # CardService (operações de negócio)
+│   │
+│   ├── infrastructure/      # Persistência
+│   │   └── database.py      # Database SQLite
+│   │
+│   ├── ui/                  # VIEW - Interface gráfica
+│   │   ├── main_window.py   # Janela principal
+│   │   ├── widgets.py       # Widgets customizados
+│   │   └── styles.py        # Temas claro/escuro
+│   │
+│   ├── application/         # CONTROLLER - Orquestração
+│   │   └── controller.py    # TimeTrackerController
+│   │
+│   └── config.py            # Configurações
+│
+├── main.py                  # Entry point (inicialização)
+├── requirements.txt         # Dependências Python
+├── timetracker.db          # Banco de dados SQLite (criado automaticamente)
+├── install.sh              # Script de instalação
+├── run.sh                  # Script de execução
+└── timetracker.desktop     # Atalho para desktop
 ```
 
-## 🧪 Testes
+### 💾 Persistência de Dados
 
-Execute os testes unitários:
+- Os dados são salvos automaticamente em `timetracker.db` (SQLite)
+- Auto-save acontece a cada 5 segundos
+- Todos os cards e configurações são persistidos
+- Ao reabrir a aplicação, tudo é restaurado
 
-```bash
-python3 test.py
-```
-
-## 🛠️ Tecnologias
-
-- **Python 3**: Linguagem principal
-- **PyQt6**: Framework de interface gráfica
-- **Qt Fusion Style**: Estilo moderno da interface
-
-## 📸 Preview da Interface
-
-A interface possui:
-- Tabela limpa com bordas arredondadas
-- Botões coloridos intuitivos (verde = play, vermelho = pause)
-- Campos editáveis inline
-- Layout responsivo e espaçado
-- Tipografia clara e legível
 
 ## 🔧 Solução de Problemas
 
@@ -156,28 +138,6 @@ python3 -m pip install --user PyQt6
 ```bash
 sudo apt install python3-pip
 ```
-
-**Verificar instalação:**
-```bash
-python3 -c "import PyQt6; print('PyQt6 instalado com sucesso!')"
-```
-
-## 🚀 Melhorias Futuras
-
-- [ ] Exportar dados para CSV
-- [ ] Persistência em banco de dados SQLite
-- [ ] Notificações de tempo
-- [ ] Relatórios diários/semanais
-- [ ] Tema escuro/claro
-- [ ] Atalhos de teclado
-- [ ] Backup automático
-- [ ] Sincronização em nuvem
-
-## 📝 Notas
-
-- Os dados atuais são mantidos apenas em memória
-- Fechar a aplicação resultará na perda dos dados
-- Para uso profissional, considere implementar persistência
 
 ## 📄 Licença
 

@@ -1,9 +1,8 @@
 """
-Camada de persistência com SQLite
+Database Layer - SQLite persistence
 """
 import sqlite3
 from typing import List, Optional
-from pathlib import Path
 
 
 class Database:
@@ -52,14 +51,12 @@ class Database:
         cursor = conn.cursor()
         
         if card_id is None or card_id == 0:
-            # Inserir novo card
             cursor.execute('''
                 INSERT INTO cards (name, elapsed_seconds, start_time, end_time, is_running)
                 VALUES (?, ?, ?, ?, ?)
             ''', (name, elapsed_seconds, start_time, end_time, is_running))
             card_id = cursor.lastrowid
         else:
-            # Atualizar card existente
             cursor.execute('''
                 UPDATE cards 
                 SET name = ?, elapsed_seconds = ?, start_time = ?, end_time = ?, 
@@ -100,19 +97,15 @@ class Database:
         """Remove um card do banco"""
         conn = self.get_connection()
         cursor = conn.cursor()
-        
         cursor.execute('DELETE FROM cards WHERE id = ?', (card_id,))
-        
         conn.commit()
         conn.close()
     
     def clear_all(self):
-        """Remove todos os cards (útil para testes)"""
+        """Remove todos os cards"""
         conn = self.get_connection()
         cursor = conn.cursor()
-        
         cursor.execute('DELETE FROM cards')
-        
         conn.commit()
         conn.close()
     
@@ -120,12 +113,10 @@ class Database:
         """Salva uma configuração"""
         conn = self.get_connection()
         cursor = conn.cursor()
-        
         cursor.execute('''
             INSERT OR REPLACE INTO settings (key, value)
             VALUES (?, ?)
         ''', (key, value))
-        
         conn.commit()
         conn.close()
     
@@ -133,10 +124,8 @@ class Database:
         """Carrega uma configuração"""
         conn = self.get_connection()
         cursor = conn.cursor()
-        
         cursor.execute('SELECT value FROM settings WHERE key = ?', (key,))
         row = cursor.fetchone()
-        
         conn.close()
         
         if row:
