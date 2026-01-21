@@ -70,24 +70,36 @@ class Database:
     
     def load_cards(self) -> List[dict]:
         """Carrega todos os cards do banco"""
+        from datetime import datetime
         conn = self.get_connection()
         cursor = conn.cursor()
         
         cursor.execute('''
-            SELECT id, name, elapsed_seconds, start_time, end_time, is_running
+            SELECT id, name, elapsed_seconds, start_time, end_time, is_running, created_at
             FROM cards
             ORDER BY id
         ''')
         
         cards = []
         for row in cursor.fetchall():
+            # Converte created_at para formato dd/mm/yy
+            created_date = None
+            if row[6]:  # created_at
+                try:
+                    # Formato do SQLite: YYYY-MM-DD HH:MM:SS
+                    dt = datetime.strptime(row[6], '%Y-%m-%d %H:%M:%S')
+                    created_date = dt.strftime('%d/%m/%y')
+                except:
+                    created_date = datetime.now().strftime('%d/%m/%y')
+            
             cards.append({
                 'id': row[0],
                 'name': row[1],
                 'elapsed_seconds': row[2],
                 'start_time': row[3],
                 'end_time': row[4],
-                'is_running': bool(row[5])
+                'is_running': bool(row[5]),
+                'created_date': created_date
             })
         
         conn.close()
