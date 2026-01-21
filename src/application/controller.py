@@ -79,7 +79,8 @@ class TimeTrackerController:
             on_checkbox_changed=self.on_card_selected,
             on_text_changed=self.on_card_text_changed,
             on_play_clicked=self.on_play_card,
-            on_pause_clicked=self.on_pause_card
+            on_pause_clicked=self.on_pause_card,
+            on_time_changed=self.on_time_changed
         )
     
     def update_display(self):
@@ -128,13 +129,22 @@ class TimeTrackerController:
         msg.setStandardButtons(
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
-        msg.setDefaultButton(QMessageBox.StandardButton.No)
+        msg.setDefaultButton(QMessageBox.StandardButton.Yes)
         
-        # Customizar textos dos botões
+        # Customizar textos dos botões (sem ícones)
         yes_btn = msg.button(QMessageBox.StandardButton.Yes)
         no_btn = msg.button(QMessageBox.StandardButton.No)
-        yes_btn.setText(" Excluir")
-        no_btn.setText(" Cancelar")
+        yes_btn.setText("Excluir")
+        no_btn.setText("Cancelar")
+        yes_btn.setIcon(yes_btn.style().standardIcon(yes_btn.style().StandardPixmap.SP_CustomBase))
+        no_btn.setIcon(no_btn.style().standardIcon(no_btn.style().StandardPixmap.SP_CustomBase))
+        
+        # Identificar botão para estilização CSS
+        yes_btn.setObjectName("deleteConfirmButton")
+        
+        # Forçar aplicação do stylesheet
+        yes_btn.style().unpolish(yes_btn)
+        yes_btn.style().polish(yes_btn)
         
         # Mostrar diálogo e verificar resposta
         if msg.exec() == QMessageBox.StandardButton.Yes:
@@ -164,6 +174,10 @@ class TimeTrackerController:
     
     def on_card_text_changed(self):
         """Handler para mudança no texto do card"""
+        self.save_cards_to_db()
+    
+    def on_time_changed(self):
+        """Handler para mudança nos horários do card"""
         self.save_cards_to_db()
     
     def on_play_card(self, card: Card):

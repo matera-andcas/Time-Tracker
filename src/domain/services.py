@@ -13,7 +13,11 @@ class CardService:
     
     def add_card(self, name: str = "") -> Card:
         """Adiciona um novo card"""
-        card = Card(name=name)
+        from datetime import datetime
+        card = Card(
+            name=name,
+            created_date=datetime.now().strftime("%d/%m/%y")
+        )
         self.cards.append(card)
         return card
     
