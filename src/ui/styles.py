@@ -232,6 +232,153 @@ def get_light_stylesheet() -> str:
             padding: 1px 0px;
         }
         
+        /* Time Widgets */
+        QLabel#timeFieldLabel {
+            font-size: 11px;
+            color: #6c757d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        QLabel#editableTimeValue {
+            font-size: 13px;
+            color: #007bff;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background-color: #f0f8ff;
+        }
+        
+        QLabel#editableTimeValue:hover {
+            background-color: #e3f2fd;
+        }
+        
+        /* Time Picker Dialog - Modern Design */
+        QWidget#timePickerContainer {
+            background-color: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #dee2e6;
+        }
+        
+        QWidget#timePickerHeader {
+            background-color: #f8f9fa;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        QWidget#timePickerFooter {
+            background-color: #f8f9fa;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        QLabel#timePickerTitle {
+            color: #1a1a1a;
+        }
+        
+        QLabel#timePickerSubtitle {
+            color: #6c757d;
+        }
+        
+        QLabel#timePickerLabel {
+            color: #6c757d;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        QLabel#timePickerSeparator {
+            color: #adb5bd;
+            padding: 0px 8px;
+        }
+        
+        QSpinBox#timePickerSpinBox {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 8px;
+            color: #1a1a1a;
+        }
+        
+        QSpinBox#timePickerSpinBox:focus {
+            border-color: #007bff;
+            background-color: #ffffff;
+        }
+        
+        QSpinBox#timePickerSpinBox::up-button {
+            subcontrol-origin: border;
+            subcontrol-position: top right;
+            width: 24px;
+            border-left: 1px solid #dee2e6;
+            border-top-right-radius: 6px;
+            background-color: #ffffff;
+        }
+        
+        QSpinBox#timePickerSpinBox::up-button:hover {
+            background-color: #e9ecef;
+        }
+        
+        QSpinBox#timePickerSpinBox::down-button {
+            subcontrol-origin: border;
+            subcontrol-position: bottom right;
+            width: 24px;
+            border-left: 1px solid #dee2e6;
+            border-bottom-right-radius: 6px;
+            background-color: #ffffff;
+        }
+        
+        QSpinBox#timePickerSpinBox::down-button:hover {
+            background-color: #e9ecef;
+        }
+        
+        QPushButton#timePickerOkButton {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+        }
+        
+        QPushButton#timePickerOkButton:hover {
+            background-color: #0056b3;
+        }
+        
+        QPushButton#timePickerCancelButton {
+            background-color: transparent;
+            color: #6c757d;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            border: 1px solid #dee2e6;
+        }
+        
+        QPushButton#timePickerCancelButton:hover {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+        }
+        
+        QPushButton#timePickerNowButton {
+            background-color: #e7f3ff;
+            color: #007bff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            border: 1px solid #cce5ff;
+        }
+        
+        QPushButton#timePickerNowButton:hover {
+            background-color: #cce5ff;
+            border-color: #99cfff;
+        }
+        
         /* Status Indicators */
         QLabel#statusIndicatorRunning {
             background-color: #28a745;
@@ -269,6 +416,25 @@ def get_light_stylesheet() -> str:
         
         QMessageBox QPushButton:default:hover {
             background-color: #0056b3;
+        }
+        
+        /* Botão de confirmação de exclusão (vermelho) */
+        QMessageBox QPushButton#deleteConfirmButton {
+            background-color: #dc3545;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            border: none;
+            min-width: 80px;
+        }
+        
+        QMessageBox QPushButton#deleteConfirmButton:hover {
+            background-color: #c82333;
+        }
+        
+        QMessageBox QPushButton#deleteConfirmButton:pressed {
+            background-color: #bd2130;
         }
         
         QMessageBox QPushButton:!default {
@@ -514,6 +680,153 @@ def get_dark_stylesheet() -> str:
             padding: 1px 0px;
         }
         
+        /* Time Widgets */
+        QLabel#timeFieldLabel {
+            font-size: 11px;
+            color: #7d8590;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        QLabel#editableTimeValue {
+            font-size: 13px;
+            color: #58a6ff;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background-color: #0d1117;
+        }
+        
+        QLabel#editableTimeValue:hover {
+            background-color: #161b22;
+        }
+        
+        /* Time Picker Dialog - Modern Design */
+        QWidget#timePickerContainer {
+            background-color: #0d1117;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+        }
+        
+        QWidget#timePickerHeader {
+            background-color: #161b22;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            border-bottom: 1px solid #21262d;
+        }
+        
+        QWidget#timePickerFooter {
+            background-color: #161b22;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            border-top: 1px solid #21262d;
+        }
+        
+        QLabel#timePickerTitle {
+            color: #e6edf3;
+        }
+        
+        QLabel#timePickerSubtitle {
+            color: #8b949e;
+        }
+        
+        QLabel#timePickerLabel {
+            color: #8b949e;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        QLabel#timePickerSeparator {
+            color: #6e7681;
+            padding: 0px 8px;
+        }
+        
+        QSpinBox#timePickerSpinBox {
+            background-color: #0d1117;
+            border: 2px solid #30363d;
+            border-radius: 8px;
+            padding: 8px;
+            color: #e6edf3;
+        }
+        
+        QSpinBox#timePickerSpinBox:focus {
+            border-color: #1f6feb;
+            background-color: #161b22;
+        }
+        
+        QSpinBox#timePickerSpinBox::up-button {
+            subcontrol-origin: border;
+            subcontrol-position: top right;
+            width: 24px;
+            border-left: 1px solid #30363d;
+            border-top-right-radius: 6px;
+            background-color: #161b22;
+        }
+        
+        QSpinBox#timePickerSpinBox::up-button:hover {
+            background-color: #21262d;
+        }
+        
+        QSpinBox#timePickerSpinBox::down-button {
+            subcontrol-origin: border;
+            subcontrol-position: bottom right;
+            width: 24px;
+            border-left: 1px solid #30363d;
+            border-bottom-right-radius: 6px;
+            background-color: #161b22;
+        }
+        
+        QSpinBox#timePickerSpinBox::down-button:hover {
+            background-color: #21262d;
+        }
+        
+        QPushButton#timePickerOkButton {
+            background-color: #238636;
+            color: #ffffff;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+        }
+        
+        QPushButton#timePickerOkButton:hover {
+            background-color: #2ea043;
+        }
+        
+        QPushButton#timePickerCancelButton {
+            background-color: transparent;
+            color: #8b949e;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            border: 1px solid #30363d;
+        }
+        
+        QPushButton#timePickerCancelButton:hover {
+            background-color: #161b22;
+            border-color: #484f58;
+        }
+        
+        QPushButton#timePickerNowButton {
+            background-color: #0d1117;
+            color: #58a6ff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            border: 1px solid #1f6feb;
+        }
+        
+        QPushButton#timePickerNowButton:hover {
+            background-color: #161b22;
+            border-color: #388bfd;
+        }
+        
         /* Status Indicators */
         QLabel#statusIndicatorRunning {
             background-color: #3fb950;
@@ -544,13 +857,32 @@ def get_dark_stylesheet() -> str:
         }
         
         QMessageBox QPushButton:default {
-            background-color: #da3633;
+            background-color: #238636;
             color: #ffffff;
             border: none;
         }
         
         QMessageBox QPushButton:default:hover {
+            background-color: #2ea043;
+        }
+        
+        /* Botão de confirmação de exclusão (vermelho) */
+        QMessageBox QPushButton#deleteConfirmButton {
+            background-color: #da3633;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            border: none;
+            min-width: 80px;
+        }
+        
+        QMessageBox QPushButton#deleteConfirmButton:hover {
             background-color: #f85149;
+        }
+        
+        QMessageBox QPushButton#deleteConfirmButton:pressed {
+            background-color: #b62324;
         }
         
         QMessageBox QPushButton:!default {

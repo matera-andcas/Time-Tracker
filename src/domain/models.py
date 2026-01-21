@@ -3,6 +3,7 @@ Domain Models - Core business entities
 """
 from dataclasses import dataclass, field
 from datetime import datetime
+import re
 from typing import Optional
 from PyQt6.QtCore import QElapsedTimer
 
@@ -17,6 +18,7 @@ class Card:
     start_time: Optional[str] = None
     end_time: Optional[str] = None
     is_selected: bool = False
+    created_date: Optional[str] = None  # Data de criação no formato dd/mm/yy
     timer: Optional[QElapsedTimer] = field(default=None, repr=False, compare=False)
     _db_id: Optional[int] = None
     
@@ -41,8 +43,10 @@ class Card:
         """Inicia o timer do card"""
         if not self.is_running:
             self.is_running = True
-            if self.start_time is None:
+            # Só define start_time se for o primeiro start (nunca foi iniciado antes)
+            if self.start_time is None and self.elapsed_seconds == 0:
                 self.start_time = datetime.now().strftime("%H:%M")
+            # Se já tem elapsed_seconds, é um resume, não altera start_time
             self.end_time = None
             if self.timer is None:
                 self.timer = QElapsedTimer()
@@ -78,15 +82,49 @@ class Card:
         self.is_running = False
         self.timer = None
     
+    def validate_time_format(self, time_str: str) -> bool:
+        """Valida se o horário está no formato HH:MM válido"""
+        if not time_str:
+            return True  # Empty is valid
+        
+        pattern = re.compile(r'^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$')
+        if not pattern.match(time_str):
+            return False
+        
+        parts = time_str.split(':')
+        hours = int(parts[0])
+        minutes = int(parts[1])
+        
+        return 0 <= hours <= 23 and 0 <= minutes <= 59
+    
+    def update_start_time(self, time_str: str) -> bool:
+        """Atualiza o start time com validação SEM recalcular elapsed_seconds"""
+        if time_str and not self.validate_time_format(time_str):
+            return False
+        self.start_time = time_str if time_str else None
+        return True
+    
+    def update_end_time(self, time_str: str) -> bool:
+        """Atualiza o end time com validação SEM recalcular elapsed_seconds"""
+        if time_str and not self.validate_time_format(time_str):
+            return False
+        self.end_time = time_str if time_str else None
+        return True
+    
     def to_dict(self) -> dict:
         """Converte o card para dicionário (para salvar no DB)"""
+        # Sempre salva o elapsed_seconds atualizado
+        current_elapsed = self.elapsed_seconds
+        if self.is_running and self.timer:
+            current_elapsed = self.elapsed_seconds + (self.timer.elapsed() // 1000)
+        
         return {
             'id': self._db_id,
             'name': self.name,
-            'elapsed_seconds': self.get_current_elapsed_seconds() if self.is_running else self.elapsed_seconds,
+            'elapsed_seconds': current_elapsed,
             'start_time': self.start_time,
             'end_time': self.end_time,
-            'is_running': False
+            'is_running': False  # Sempre salva como não rodando
         }
     
     @staticmethod
@@ -98,7 +136,8 @@ class Card:
             elapsed_seconds=data['elapsed_seconds'],
             start_time=data['start_time'],
             end_time=data['end_time'],
-            is_running=False
+            is_running=False,
+            created_date=data.get('created_date')
         )
         card._db_id = data['id']
         return card

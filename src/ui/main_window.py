@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt
 from .widgets import CardNameWidget
+from .time_widgets import TimeRangeWidget
 from .styles import get_light_stylesheet, get_dark_stylesheet
 
 
@@ -116,7 +117,7 @@ class MainWindow(QMainWindow):
         self.select_all_cb.setObjectName("selectAllCheckbox")
         action_layout.addWidget(self.select_all_cb)
         
-        self.delete_btn = QPushButton("🗑️ Delete Selected")
+        self.delete_btn = QPushButton("Delete")
         self.delete_btn.setObjectName("deleteButton")
         action_layout.addWidget(self.delete_btn)
         
@@ -150,7 +151,7 @@ class MainWindow(QMainWindow):
             focused_widget.clearFocus()
     
     def refresh_table(self, cards, on_checkbox_changed, on_text_changed, 
-                      on_play_clicked, on_pause_clicked):
+                      on_play_clicked, on_pause_clicked, on_time_changed):
         """Atualiza a tabela com os dados dos cards"""
         self.table.setRowCount(len(cards))
         
@@ -177,8 +178,8 @@ class MainWindow(QMainWindow):
             duration_widget = self.create_duration_widget(card)
             self.table.setCellWidget(row, 2, duration_widget)
             
-            # Time range display
-            time_range_widget = self.create_time_range_widget(card)
+            # Time range display with editable fields
+            time_range_widget = TimeRangeWidget(card, on_time_changed)
             self.table.setCellWidget(row, 3, time_range_widget)
             
             # Control buttons
@@ -203,7 +204,9 @@ class MainWindow(QMainWindow):
         time_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(time_label)
         
-        date_label = QLabel(datetime.now().strftime("%d/%m/%y"))
+        # Usa a data de criação do card, ou data atual se não existir
+        card_date = card.created_date if card.created_date else datetime.now().strftime("%d/%m/%y")
+        date_label = QLabel(card_date)
         date_label.setObjectName("dateLabel")
         date_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(date_label)
@@ -292,12 +295,26 @@ class MainWindow(QMainWindow):
                     if time_label:
                         time_label.setText(card.get_formatted_time())
                 
-                # Update time range display
+                # NÃO recria o time range widget - apenas atualiza se mudou de estado
                 time_range_widget = self.table.cellWidget(row, 3)
-                if time_range_widget:
-                    # Recreate time range widget for dynamic updates
-                    new_widget = self.create_time_range_widget(card)
-                    self.table.setCellWidget(row, 3, new_widget)
+                if time_range_widget and isinstance(time_range_widget, TimeRangeWidget):
+                    # Verifica se o estado mudou (running/paused)
+                    children = time_range_widget.findChildren(QLabel, "runningLabel")
+                    has_running_label = len(children) > 0
+                    
+                    needs_recreate = False
+                    if has_running_label and not card.is_running:
+                        needs_recreate = True
+                    elif not has_running_label and card.is_running:
+                        needs_recreate = True
+                    
+                    if needs_recreate:
+                        # Só recria se mudou de estado (running <-> paused)
+                        new_widget = TimeRangeWidget(card, lambda: None)
+                        self.table.setCellWidget(row, 3, new_widget)
+                    else:
+                        # Apenas atualiza os valores sem recriar
+                        time_range_widget.update_times()
                 
                 # Update control buttons state
                 controls_widget = self.table.cellWidget(row, 4)
