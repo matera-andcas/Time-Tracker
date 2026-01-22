@@ -2,6 +2,8 @@
 Database Layer - SQLite persistence
 """
 import sqlite3
+import os
+from pathlib import Path
 from typing import List, Optional
 
 
@@ -9,8 +11,27 @@ class Database:
     """Gerencia a conexão e operações com SQLite"""
     
     def __init__(self, db_path: str = "timetracker.db"):
-        self.db_path = db_path
+        # Garantir que o caminho do banco seja absoluto e multiplataforma
+        if not os.path.isabs(db_path):
+            # Coloca o banco de dados no diretório do usuário
+            user_data_dir = self._get_user_data_dir()
+            user_data_dir.mkdir(parents=True, exist_ok=True)
+            self.db_path = str(user_data_dir / db_path)
+        else:
+            self.db_path = db_path
         self.init_database()
+    
+    @staticmethod
+    def _get_user_data_dir() -> Path:
+        """Retorna o diretório de dados do usuário de forma multiplataforma"""
+        system = os.name
+        
+        if system == 'nt':  # Windows
+            base_path = Path(os.environ.get('APPDATA', Path.home()))
+            return base_path / 'TimeTracker'
+        else:  # Linux/Mac
+            base_path = Path.home()
+            return base_path / '.timetracker'
     
     def get_connection(self):
         """Retorna uma conexão com o banco de dados"""

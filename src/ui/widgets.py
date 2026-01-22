@@ -2,7 +2,6 @@
 Custom UI Widgets - Improved interaction patterns and accessibility
 """
 import re
-import subprocess
 import webbrowser
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QLineEdit, QLabel
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -119,19 +118,9 @@ class CardNameWidget(QWidget):
             self.refresh_widget()
     
     def open_link(self, url: str):
-        """Abre o link no navegador padrão ou Chrome"""
+        """Abre o link no navegador padrão (multiplataforma)"""
         try:
-            # Try Chrome first
-            subprocess.Popen(['google-chrome', '--new-tab', url], 
-                           stdout=subprocess.DEVNULL, 
-                           stderr=subprocess.DEVNULL)
-        except FileNotFoundError:
-            try:
-                # Try Chromium
-                subprocess.Popen(['chromium', '--new-tab', url],
-                               stdout=subprocess.DEVNULL,
-                               stderr=subprocess.DEVNULL)
-            except FileNotFoundError:
-                # Fallback to default browser
-                webbrowser.open(url, new=2)
+            webbrowser.open(url, new=2)
+        except Exception as e:
+            print(f"Erro ao abrir link: {e}")
 
