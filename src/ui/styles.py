@@ -218,6 +218,20 @@ def get_light_stylesheet() -> str:
             padding: 2px 0px;
         }
         
+        QLabel#editableDateLabel {
+            font-size: 11px;
+            color: #6c757d;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: transparent;
+        }
+        
+        QLabel#editableDateLabel:hover {
+            background-color: #f0f0f0;
+            color: #495057;
+        }
+        
         QLabel#timeRangeLabel {
             font-size: 12px;
             color: #495057;
@@ -664,6 +678,20 @@ def get_dark_stylesheet() -> str:
             color: #7d8590;
             font-weight: 500;
             padding: 2px 0px;
+        }
+        
+        QLabel#editableDateLabel {
+            font-size: 11px;
+            color: #7d8590;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: transparent;
+        }
+        
+        QLabel#editableDateLabel:hover {
+            background-color: #21262d;
+            color: #8b949e;
         }
         
         QLabel#timeRangeLabel {

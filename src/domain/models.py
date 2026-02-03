@@ -111,6 +111,16 @@ class Card:
         self.end_time = time_str if time_str else None
         return True
     
+    def update_created_date(self, date_str: str) -> bool:
+        """Atualiza a data de criação do card"""
+        if date_str:
+            # Validação básica: formato dd/mm/yy
+            pattern = re.compile(r'^(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[0-2])/\d{2}$')
+            if not pattern.match(date_str):
+                return False
+        self.created_date = date_str if date_str else None
+        return True
+    
     def to_dict(self) -> dict:
         """Converte o card para dicionário (para salvar no DB)"""
         # Sempre salva o elapsed_seconds atualizado
@@ -124,7 +134,8 @@ class Card:
             'elapsed_seconds': current_elapsed,
             'start_time': self.start_time,
             'end_time': self.end_time,
-            'is_running': False  # Sempre salva como não rodando
+            'is_running': False,  # Sempre salva como não rodando
+            'created_date': self.created_date
         }
     
     @staticmethod

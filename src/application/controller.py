@@ -67,7 +67,8 @@ class TimeTrackerController:
                 elapsed_seconds=card_data['elapsed_seconds'],
                 start_time=card_data['start_time'],
                 end_time=card_data['end_time'],
-                is_running=card_data['is_running']
+                is_running=card_data['is_running'],
+                created_date=card_data.get('created_date')
             )
             if card.db_id is None:
                 card.db_id = db_id
@@ -80,7 +81,8 @@ class TimeTrackerController:
             on_text_changed=self.on_card_text_changed,
             on_play_clicked=self.on_play_card,
             on_pause_clicked=self.on_pause_card,
-            on_time_changed=self.on_time_changed
+            on_time_changed=self.on_time_changed,
+            on_date_changed=self.on_date_changed
         )
     
     def update_display(self):
@@ -95,7 +97,11 @@ class TimeTrackerController:
     
     def on_add_card(self):
         """Handler para adicionar card"""
+        from datetime import datetime
         card = self.card_service.add_card()
+        # Define a data de criação se não existir
+        if not card.created_date:
+            card.created_date = datetime.now().strftime("%d/%m/%y")
         card_data = card.to_dict()
         db_id = self.db.save_card(
             card_id=None,
@@ -178,6 +184,10 @@ class TimeTrackerController:
     
     def on_time_changed(self):
         """Handler para mudança nos horários do card"""
+        self.save_cards_to_db()
+    
+    def on_date_changed(self):
+        """Handler para mudança na data do card"""
         self.save_cards_to_db()
     
     def on_play_card(self, card: Card):
