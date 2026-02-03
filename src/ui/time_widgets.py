@@ -3,11 +3,52 @@ Time Widgets - Interactive time display and picker components
 """
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
-    QDialog, QSpinBox, QPushButton, QTimeEdit
+    QDialog, QSpinBox, QPushButton, QTimeEdit, QCalendarWidget
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QTime
 from PyQt6.QtGui import QCursor, QFont
 from datetime import datetime
+
+
+class PaddedSpinBox(QSpinBox):
+    """QSpinBox que sempre exibe valores com zero à esquerda (formato 00-99) com botões customizados"""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        # Esconde os botões padrão e cria botões customizados
+        self.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
+        self.setup_custom_buttons()
+    
+    def setup_custom_buttons(self):
+        """Cria botões customizados com setas visíveis"""
+        # Botão de incremento
+        self.up_button = QPushButton("▲", self)
+        self.up_button.setObjectName("timePickerCustomButton")
+        self.up_button.setFixedSize(30, 32)
+        self.up_button.clicked.connect(self.stepUp)
+        self.up_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        
+        # Botão de decremento  
+        self.down_button = QPushButton("▼", self)
+        self.down_button.setObjectName("timePickerCustomButton")
+        self.down_button.setFixedSize(30, 32)
+        self.down_button.clicked.connect(self.stepDown)
+        self.down_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+    
+    def resizeEvent(self, event):
+        """Posiciona os botões customizados"""
+        super().resizeEvent(event)
+        button_x = self.width() - 32
+        self.up_button.move(button_x, 1)
+        self.down_button.move(button_x, 33)
+    
+    def textFromValue(self, value: int) -> str:
+        """Retorna o texto formatado com zero à esquerda"""
+        return f"{value:02d}"
+    
+    def valueFromText(self, text: str) -> int:
+        """Converte o texto de volta para inteiro"""
+        return int(text)
 
 
 class TimePickerDialog(QDialog):
@@ -17,8 +58,14 @@ class TimePickerDialog(QDialog):
         super().__init__(parent)
         self.selected_time = initial_time
         self.setWindowTitle("Set Time")
+        self.setObjectName("timePickerDialog")
         # Remove FramelessWindowHint to show standard window decorations
         self.setWindowFlags(Qt.WindowType.Dialog)
+        
+        # Aplica o stylesheet do parent para herdar o tema
+        if parent and parent.styleSheet():
+            self.setStyleSheet(parent.styleSheet())
+        
         self.init_ui()
         
     def init_ui(self):
@@ -66,14 +113,14 @@ class TimePickerDialog(QDialog):
         hour_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         hour_container.addWidget(hour_label)
         
-        self.hour_spin = QSpinBox()
+        self.hour_spin = PaddedSpinBox()
         self.hour_spin.setObjectName("timePickerSpinBox")
         self.hour_spin.setRange(0, 23)
         self.hour_spin.setValue(hour)
         self.hour_spin.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.hour_spin.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
         self.hour_spin.setMinimumHeight(65)
-        self.hour_spin.setMinimumWidth(90)
+        self.hour_spin.setMinimumWidth(120)
+        self.hour_spin.lineEdit().setReadOnly(False)
         hour_spin_font = self.hour_spin.font()
         hour_spin_font.setPointSize(22)
         hour_spin_font.setBold(True)
@@ -82,7 +129,10 @@ class TimePickerDialog(QDialog):
         
         time_row.addLayout(hour_container)
         
-        # Separator ":"
+        # Separator ":" - container para centralizar verticalmente
+        separator_container = QVBoxLayout()
+        separator_container.addSpacing(36)  # Espaço para alinhar com os spinboxes
+        
         separator = QLabel(":")
         separator.setObjectName("timePickerSeparator")
         separator.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -90,7 +140,10 @@ class TimePickerDialog(QDialog):
         sep_font.setPointSize(26)
         sep_font.setBold(True)
         separator.setFont(sep_font)
-        time_row.addWidget(separator)
+        separator_container.addWidget(separator)
+        separator_container.addStretch()
+        
+        time_row.addLayout(separator_container)
         
         # Minute spinbox
         minute_container = QVBoxLayout()
@@ -100,14 +153,14 @@ class TimePickerDialog(QDialog):
         minute_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         minute_container.addWidget(minute_label)
         
-        self.minute_spin = QSpinBox()
+        self.minute_spin = PaddedSpinBox()
         self.minute_spin.setObjectName("timePickerSpinBox")
         self.minute_spin.setRange(0, 59)
         self.minute_spin.setValue(minute)
         self.minute_spin.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.minute_spin.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
         self.minute_spin.setMinimumHeight(65)
-        self.minute_spin.setMinimumWidth(90)
+        self.minute_spin.setMinimumWidth(120)
+        self.minute_spin.lineEdit().setReadOnly(False)
         minute_spin_font = self.minute_spin.font()
         minute_spin_font.setPointSize(22)
         minute_spin_font.setBold(True)
@@ -342,164 +395,116 @@ class EditableDateWidget(QWidget):
 
 
 class DateEditDialog(QDialog):
-    """Dialog simples para editar data no formato dd/mm/yy"""
+    """Dialog com calendário moderno para editar data no formato dd/mm/yy"""
     
     def __init__(self, initial_date: str = "", parent=None):
         super().__init__(parent)
         self.selected_date = initial_date
-        self.setWindowTitle("Edit Date")
+        self.setWindowTitle("Select Date")
+        self.setObjectName("dateEditDialog")
         self.setWindowFlags(Qt.WindowType.Dialog)
+        
+        # Aplica o stylesheet do parent para herdar o tema
+        if parent and parent.styleSheet():
+            self.setStyleSheet(parent.styleSheet())
+        
         self.init_ui()
         
     def init_ui(self):
         """Inicializa a interface do dialog"""
         self.setModal(True)
-        self.setFixedSize(320, 240)
+        self.setFixedSize(420, 480)
         
+        # Container principal
         main_layout = QVBoxLayout()
-        main_layout.setContentsMargins(24, 20, 24, 20)
-        main_layout.setSpacing(16)
+        main_layout.setContentsMargins(28, 24, 28, 24)
+        main_layout.setSpacing(20)
         self.setLayout(main_layout)
         
-        # Subtitle
-        subtitle = QLabel("Enter date (dd/mm/yy)")
-        subtitle.setObjectName("timePickerSubtitle")
-        subtitle_font = subtitle.font()
-        subtitle_font.setPointSize(10)
-        subtitle.setFont(subtitle_font)
-        main_layout.addWidget(subtitle)
+        # Header
+        header_layout = QVBoxLayout()
+        header_layout.setSpacing(8)
         
-        main_layout.addSpacing(8)
+        self.title = QLabel("📅 Select Date")
+        self.title.setObjectName("calendarDialogTitle")
+        self.title.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        header_layout.addWidget(self.title)
         
-        # Parse initial date
-        day, month, year = 1, 1, 24
+        # Selected date display
+        from PyQt6.QtCore import QDate
+        selected_qdate = QDate.currentDate()
+        
         if self.selected_date:
             try:
                 parts = self.selected_date.split('/')
                 if len(parts) == 3:
                     day, month, year = int(parts[0]), int(parts[1]), int(parts[2])
+                    full_year = 2000 + year if year < 100 else year
+                    selected_qdate = QDate(full_year, month, day)
             except:
-                now = datetime.now()
-                day, month, year = now.day, now.month, now.year % 100
-        else:
-            now = datetime.now()
-            day, month, year = now.day, now.month, now.year % 100
+                pass
         
-        # Date picker row
-        date_row = QHBoxLayout()
-        date_row.setSpacing(4)
+        self.date_display = QLabel(selected_qdate.toString("dddd, MMMM d, yyyy"))
+        self.date_display.setObjectName("calendarDateDisplay")
+        self.date_display.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        header_layout.addWidget(self.date_display)
         
-        # Day spinbox
-        day_container = QVBoxLayout()
-        day_container.setSpacing(8)
-        day_label = QLabel("Day")
-        day_label.setObjectName("timePickerLabel")
-        day_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        day_container.addWidget(day_label)
+        main_layout.addLayout(header_layout)
         
-        self.day_spin = QSpinBox()
-        self.day_spin.setObjectName("timePickerSpinBox")
-        self.day_spin.setRange(1, 31)
-        self.day_spin.setValue(day)
-        self.day_spin.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.day_spin.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
-        self.day_spin.setMinimumHeight(65)
-        self.day_spin.setMinimumWidth(70)
-        day_spin_font = self.day_spin.font()
-        day_spin_font.setPointSize(22)
-        day_spin_font.setBold(True)
-        self.day_spin.setFont(day_spin_font)
-        day_container.addWidget(self.day_spin)
-        date_row.addLayout(day_container)
+        # Divider
+        divider = QLabel()
+        divider.setObjectName("calendarDivider")
+        divider.setFixedHeight(1)
+        main_layout.addWidget(divider)
         
-        # Separator "/"
-        separator1 = QLabel("/")
-        separator1.setObjectName("timePickerSeparator")
-        separator1.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        sep_font1 = separator1.font()
-        sep_font1.setPointSize(26)
-        sep_font1.setBold(True)
-        separator1.setFont(sep_font1)
-        date_row.addWidget(separator1)
+        # Calendar Widget
+        self.calendar = QCalendarWidget()
+        self.calendar.setObjectName("modernCalendar")
+        self.calendar.setSelectedDate(selected_qdate)
+        self.calendar.setGridVisible(False)
+        self.calendar.setVerticalHeaderFormat(QCalendarWidget.VerticalHeaderFormat.NoVerticalHeader)
+        self.calendar.setHorizontalHeaderFormat(QCalendarWidget.HorizontalHeaderFormat.ShortDayNames)
+        self.calendar.setMinimumHeight(280)
+        self.calendar.setMaximumHeight(320)
         
-        # Month spinbox
-        month_container = QVBoxLayout()
-        month_container.setSpacing(8)
-        month_label = QLabel("Month")
-        month_label.setObjectName("timePickerLabel")
-        month_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        month_container.addWidget(month_label)
+        # Update date display when selection changes
+        self.calendar.selectionChanged.connect(self.update_date_display)
         
-        self.month_spin = QSpinBox()
-        self.month_spin.setObjectName("timePickerSpinBox")
-        self.month_spin.setRange(1, 12)
-        self.month_spin.setValue(month)
-        self.month_spin.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.month_spin.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
-        self.month_spin.setMinimumHeight(65)
-        self.month_spin.setMinimumWidth(70)
-        month_spin_font = self.month_spin.font()
-        month_spin_font.setPointSize(22)
-        month_spin_font.setBold(True)
-        self.month_spin.setFont(month_spin_font)
-        month_container.addWidget(self.month_spin)
-        date_row.addLayout(month_container)
-        
-        # Separator "/"
-        separator2 = QLabel("/")
-        separator2.setObjectName("timePickerSeparator")
-        separator2.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        sep_font2 = separator2.font()
-        sep_font2.setPointSize(26)
-        sep_font2.setBold(True)
-        separator2.setFont(sep_font2)
-        date_row.addWidget(separator2)
-        
-        # Year spinbox
-        year_container = QVBoxLayout()
-        year_container.setSpacing(8)
-        year_label = QLabel("Year")
-        year_label.setObjectName("timePickerLabel")
-        year_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        year_container.addWidget(year_label)
-        
-        self.year_spin = QSpinBox()
-        self.year_spin.setObjectName("timePickerSpinBox")
-        self.year_spin.setRange(0, 99)
-        self.year_spin.setValue(year)
-        self.year_spin.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.year_spin.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
-        self.year_spin.setMinimumHeight(65)
-        self.year_spin.setMinimumWidth(70)
-        year_spin_font = self.year_spin.font()
-        year_spin_font.setPointSize(22)
-        year_spin_font.setBold(True)
-        self.year_spin.setFont(year_spin_font)
-        year_container.addWidget(self.year_spin)
-        date_row.addLayout(year_container)
-        
-        main_layout.addLayout(date_row)
+        main_layout.addWidget(self.calendar)
         main_layout.addSpacing(8)
         
-        # Buttons
+        # Action buttons
         button_row = QHBoxLayout()
-        button_row.setSpacing(8)
+        button_row.setSpacing(12)
+        
+        button_row.addStretch()
         
         cancel_btn = QPushButton("Cancel")
-        cancel_btn.setObjectName("timePickerCancelButton")
+        cancel_btn.setObjectName("calendarCancelButton")
+        cancel_btn.setMinimumWidth(100)
+        cancel_btn.setMinimumHeight(42)
         cancel_btn.clicked.connect(self.reject)
         button_row.addWidget(cancel_btn)
         
-        ok_btn = QPushButton("OK")
-        ok_btn.setObjectName("timePickerOkButton")
+        ok_btn = QPushButton("Select")
+        ok_btn.setObjectName("calendarOkButton")
+        ok_btn.setMinimumWidth(100)
+        ok_btn.setMinimumHeight(42)
+        ok_btn.setDefault(True)
         ok_btn.clicked.connect(self.accept)
         button_row.addWidget(ok_btn)
         
         main_layout.addLayout(button_row)
+    
+    def update_date_display(self):
+        """Atualiza o display da data selecionada"""
+        date = self.calendar.selectedDate()
+        self.date_display.setText(date.toString("dddd, MMMM d, yyyy"))
         
     def get_selected_date(self) -> str:
         """Retorna a data selecionada no formato dd/mm/yy"""
-        day = self.day_spin.value()
-        month = self.month_spin.value()
-        year = self.year_spin.value()
+        date = self.calendar.selectedDate()
+        day = date.day()
+        month = date.month()
+        year = date.year() % 100
         return f"{day:02d}/{month:02d}/{year:02d}"
