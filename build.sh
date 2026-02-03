@@ -21,18 +21,11 @@ pip install pyinstaller
 
 # Limpar builds anteriores
 echo "🧹 Limpando builds anteriores..."
-rm -rf build/ dist/ *.spec
+rm -rf build/ dist/
 
-# Criar executável
+# Criar executável usando o .spec
 echo "🔨 Compilando aplicação..."
-pyinstaller --onefile \
-    --windowed \
-    --name="TimeTracker" \
-    --add-data="timetracker.db:." \
-    --hidden-import="PyQt6.QtCore" \
-    --hidden-import="PyQt6.QtGui" \
-    --hidden-import="PyQt6.QtWidgets" \
-    main.py
+pyinstaller TimeTracker.spec
 
 if [ $? -eq 0 ]; then
     echo ""
