@@ -151,7 +151,7 @@ class MainWindow(QMainWindow):
             focused_widget.clearFocus()
     
     def refresh_table(self, cards, on_checkbox_changed, on_text_changed, 
-                      on_play_clicked, on_pause_clicked, on_time_changed):
+                      on_play_clicked, on_pause_clicked, on_time_changed, on_date_changed=None):
         """Atualiza a tabela com os dados dos cards"""
         self.table.setRowCount(len(cards))
         
@@ -175,7 +175,7 @@ class MainWindow(QMainWindow):
             self.table.setRowHeight(row, 72)
             
             # Duration display
-            duration_widget = self.create_duration_widget(card)
+            duration_widget = self.create_duration_widget(card, on_date_changed)
             self.table.setCellWidget(row, 2, duration_widget)
             
             # Time range display with editable fields
@@ -190,7 +190,7 @@ class MainWindow(QMainWindow):
             status_widget = self.create_status_indicator(card)
             self.table.setCellWidget(row, 5, status_widget)
     
-    def create_duration_widget(self, card) -> QWidget:
+    def create_duration_widget(self, card, on_date_changed=None) -> QWidget:
         """Cria widget para exibir duração"""
         widget = QWidget()
         layout = QVBoxLayout()
@@ -204,12 +204,12 @@ class MainWindow(QMainWindow):
         time_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(time_label)
         
-        # Usa a data de criação do card, ou data atual se não existir
-        card_date = card.created_date if card.created_date else datetime.now().strftime("%d/%m/%y")
-        date_label = QLabel(card_date)
-        date_label.setObjectName("dateLabel")
-        date_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(date_label)
+        # Importa o widget de data editável
+        from .time_widgets import EditableDateWidget
+        
+        # Usa widget editável para data
+        date_widget = EditableDateWidget(card, on_date_changed)
+        layout.addWidget(date_widget)
         
         return widget
     

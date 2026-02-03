@@ -1,14 +1,15 @@
 # Time Tracker ⏱️
 
-Aplicação desktop **leve, rápida e moderna** para gerenciamento de tempo por card, para Linux e desenvolvida 100% por IA.
+Aplicação desktop **leve, rápida e moderna** para gerenciamento de tempo por card, multiplataforma (Linux/Windows) e desenvolvida 100% por IA.
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![PyQt6](https://img.shields.io/badge/PyQt6-6.6.0-green.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Platform](https://img.shields.io/badge/Platform-Linux%20|%20Windows-blue.svg)
 
 ## 📋 Sobre
 
-O Time Tracker é uma ferramenta de produtividade que permite controlar o tempo gasto em múltiplos cards/tarefas de forma simples e intuitiva. Perfeito para desenvolvedores que precisam rastrear tempo em diferentes issues, tickets ou projetos.
+O Time Tracker é uma ferramenta de produtividade multiplataforma que permite controlar o tempo gasto em múltiplos cards/tarefas de forma simples e intuitiva. Perfeito para desenvolvedores que precisam rastrear tempo em diferentes issues, tickets ou projetos.
 
 ## ✨ Características
 
@@ -35,39 +36,60 @@ O Time Tracker é uma ferramenta de produtividade que permite controlar o tempo 
 
 ## 📦 Requisitos
 
-- **Sistema**: Linux
+- **Sistema**: Linux ou Windows 10/11
 - **Python**: 3.8 ou superior
 - **PyQt6**: 6.6.0+
 
 ## 🚀 Instalação Rápida
 
-### 1. Instalar python3-venv (se necessário)
+### No Linux
+
+#### 1. Instalar python3-venv (se necessário)
 
 ```bash
 sudo apt update
 sudo apt install python3-venv python3-full
 ```
 
-### 2. Instalar dependências
+#### 2. Instalar dependências
 
 **Opção A - Script automático (recomendado):**
 ```bash
 ./install.sh
 ```
 
-Este script irá:
-- Criar um ambiente virtual Python (`venv/`)
-- Instalar o PyQt6 no ambiente isolado
-- Configurar tudo automaticamente
-
 **Opção B - Manual:**
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install PyQt6
+pip install -r requirements.txt
+```
+
+### No Windows
+
+#### 1. Instalar Python
+
+Baixe o Python 3.8+ de [python.org](https://www.python.org/downloads/)
+
+⚠️ **IMPORTANTE**: Durante a instalação, marque a opção "Add Python to PATH"
+
+#### 2. Instalar dependências
+
+**Opção A - Script automático (recomendado):**
+```cmd
+install.bat
+```
+
+**Opção B - Manual:**
+```cmd
+python -m venv venv
+venv\Scripts\activate.bat
+pip install -r requirements.txt
 ```
 
 ## ▶️ Como Executar
+
+### No Linux
 
 **Opção A - Script:**
 ```bash
@@ -77,6 +99,18 @@ pip install PyQt6
 **Opção B - Direto:**
 ```bash
 python3 main.py
+```
+
+### No Windows
+
+**Opção A - Script:**
+```cmd
+run.bat
+```
+
+**Opção B - Direto:**
+```cmd
+python main.py
 ```
 
 
