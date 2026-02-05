@@ -1,214 +1,226 @@
-# Progress: Time Tracker
+# Progresso: Time Tracker
 
-**Last Updated**: 2026-01-27
-**Project Status**: ✅ Stable & Functional
-**Version**: 1.0 (functional, production-ready)
+**Última Atualização**: 2026-02-03
+**Status do Projeto**: ✅ Estável e Visualmente Polido
+**Versão**: 1.0 (pronto para produção com UI/UX aprimorada)
 
-## What Works ✅
+## Melhorias Recentes (Fev 2026) 🎨
 
-### Core Functionality
-- ✅ Multi-card time tracking
-- ✅ Independent timers per card
-- ✅ Play/Pause controls
-- ✅ Automatic start/end time recording
-- ✅ Real-time timer display (HH:MM:SS)
-- ✅ Card name editing
-- ✅ Card deletion
-- ✅ Bulk selection (Select All)
+### Refinamentos de UI/UX
+- ✅ Harmonizado tema dark entre diálogos de Time Picker e Calendário
+- ✅ Paleta de cores unificada (#0d1117, #161b22, #58a6ff)
+- ✅ Botões customizados de incremento/decremento com setas Unicode visíveis (▲ ▼)
+- ✅ Corrigido truncamento de números no SpinBox (largura aumentada para 120px)
+- ✅ Separador de tempo ":" corretamente centralizado entre campos de hora/minuto
+- ✅ Herança de stylesheet de diálogo da janela parent
+- ✅ Transições de hover suaves e feedback visual
+- ✅ Espaçamento e padding consistentes em todos os diálogos
 
-### Data Management
-- ✅ SQLite database integration
-- ✅ Auto-save every 5 seconds
-- ✅ Data persistence across sessions
-- ✅ Automatic database initialization
-- ✅ No data loss on application restart
+## O Que Funciona ✅
 
-### User Interface
-- ✅ Clean, modern design
-- ✅ Dark/Light theme toggle
-- ✅ Theme preference persistence
-- ✅ URL detection and clickable links
-- ✅ Responsive layout
-- ✅ Visual feedback on interactions
-- ✅ Hover states and animations
+### Funcionalidade Principal
+- ✅ Rastreamento de tempo multi-card
+- ✅ Timers independentes por card
+- ✅ Controles Play/Pause
+- ✅ Gravação automática de hora de início/fim
+- ✅ Display de timer em tempo real (HH:MM:SS)
+- ✅ Edição de nome de card
+- ✅ Exclusão de card
+- ✅ Seleção em massa (Selecionar Tudo)
 
-### Cross-Platform Support
-- ✅ Linux compatibility
-- ✅ Windows compatibility
-- ✅ Platform-specific build scripts
-- ✅ Standalone executable generation
-- ✅ Desktop integration (Linux .desktop file)
+### Gerenciamento de Dados
+- ✅ Integração com banco de dados SQLite
+- ✅ Auto-save a cada 5 segundos
+- ✅ Persistência de dados entre sessões
+- ✅ Inicialização automática do banco de dados
+- ✅ Sem perda de dados ao reiniciar aplicação
 
-### Developer Experience
-- ✅ Clear MVC architecture
-- ✅ Modular code structure
-- ✅ Virtual environment setup
-- ✅ Install/run/build scripts
-- ✅ Documentation (README)
+### Interface de Usuário
+- ✅ Design limpo e moderno
+- ✅ Alternância de tema Escuro/Claro
+- ✅ Persistência de preferência de tema
+- ✅ Detecção de URL e links clicáveis
+- ✅ Layout responsivo
+- ✅ Feedback visual em interações
+- ✅ Estados de hover e animações
 
-## What's Left to Build 🚧
+### Suporte Multi-plataforma
+- ✅ Compatibilidade com Linux
+- ✅ Compatibilidade com Windows
+- ✅ Scripts de build específicos por plataforma
+- ✅ Geração de executável standalone
+- ✅ Integração desktop (arquivo .desktop do Linux)
 
-### Nice-to-Have Features
-- ⏳ Export functionality (CSV/JSON)
-- ⏳ Keyboard shortcuts
-- ⏳ Statistics/reporting dashboard
-- ⏳ Card categories or tags
-- ⏳ Time goal tracking
-- ⏳ Undo/Redo functionality
-- ⏳ Search/filter cards
-- ⏳ Notification system
-- ⏳ Customizable themes
-- ⏳ Import existing data
+### Experiência do Desenvolvedor
+- ✅ Arquitetura MVC clara
+- ✅ Estrutura de código modular
+- ✅ Setup de ambiente virtual
+- ✅ Scripts de install/run/build
+- ✅ Documentação (README)
 
-### Quality Improvements
-- ⏳ Unit tests
-- ⏳ Integration tests
-- ⏳ Automated UI tests
-- ⏳ Performance profiling
-- ⏳ Memory optimization
-- ⏳ Error logging system
-- ⏳ Crash reporting
+## O Que Falta Construir 🚧
 
-### Documentation
-- ⏳ API documentation
-- ⏳ Architecture diagrams
-- ⏳ Contribution guidelines
-- ⏳ User manual (extended)
+### Recursos Desejáveis
+- ⏳ Funcionalidade de exportação (CSV/JSON)
+- ⏳ Atalhos de teclado
+- ⏳ Dashboard de estatísticas/relatórios
+- ⏳ Categorias ou tags de cards
+- ⏳ Rastreamento de metas de tempo
+- ⏳ Funcionalidade Desfazer/Refazer
+- ⏳ Busca/filtro de cards
+- ⏳ Sistema de notificações
+- ⏳ Temas customizáveis
+- ⏳ Importar dados existentes
 
-### Distribution
-- ⏳ Linux AppImage
-- ⏳ Debian/Ubuntu package
-- ⏳ Windows installer
-- ⏳ macOS support (future)
-- ⏳ Auto-update mechanism
+### Melhorias de Qualidade
+- ⏳ Testes unitários
+- ⏳ Testes de integração
+- ⏳ Testes de UI automatizados
+- ⏳ Profiling de performance
+- ⏳ Otimização de memória
+- ⏳ Sistema de logging de erros
+- ⏳ Relatório de crashes
 
-## Current Status
+### Documentação
+- ⏳ Documentação de API
+- ⏳ Diagramas de arquitetura
+- ⏳ Diretrizes de contribuição
+- ⏳ Manual do usuário (estendido)
 
-### Completed Milestones
-1. ✅ **Initial Development** - Core application structure
-2. ✅ **Database Integration** - SQLite persistence
-3. ✅ **UI Implementation** - PyQt6 interface complete
-4. ✅ **Cross-Platform Support** - Linux and Windows functional
-5. ✅ **Build System** - PyInstaller integration
-6. ✅ **Theme System** - Dark/Light mode with persistence
-7. ✅ **Documentation** - README and setup guides
-8. ✅ **Memory Bank** - Project documentation system
+### Distribuição
+- ⏳ AppImage para Linux
+- ⏳ Pacote Debian/Ubuntu
+- ⏳ Instalador Windows
+- ⏳ Suporte macOS (futuro)
+- ⏳ Mecanismo de auto-atualização
 
-### In Progress
-- None currently
+## Status Atual
 
-### Blocked
-- None
+### Marcos Completados
+1. ✅ **Desenvolvimento Inicial** - Estrutura principal da aplicação
+2. ✅ **Integração de Banco de Dados** - Persistência SQLite
+3. ✅ **Implementação de UI** - Interface PyQt6 completa
+4. ✅ **Suporte Multi-plataforma** - Linux e Windows funcionais
+5. ✅ **Sistema de Build** - Integração com PyInstaller
+6. ✅ **Sistema de Temas** - Modo Escuro/Claro com persistência
+7. ✅ **Documentação** - README e guias de setup
+8. ✅ **Memory Bank** - Sistema de documentação do projeto
 
-## Known Issues 🐛
+### Em Progresso
+- Nenhum atualmente
 
-### Critical
-- None
+### Bloqueado
+- Nenhum
 
-### Major
-- None
+## Problemas Conhecidos 🐛
 
-### Minor
-- None currently documented
+### Crítico
+- Nenhum
 
-### Enhancement Requests
-- Export time data to CSV
-- Keyboard shortcuts for common actions
-- Statistics dashboard
-- Card categories/tags
+### Maior
+- Nenhum
 
-## Evolution of Project Decisions
+### Menor
+- Nenhum atualmente documentado
 
-### Initial Decisions (Project Start)
-1. **Python + PyQt6**: Chosen for cross-platform native UI
-2. **SQLite**: Selected for simplicity and offline-first approach
-3. **MVC Architecture**: Implemented for maintainability
-4. **Auto-save**: Decided against manual save to improve UX
+### Solicitações de Melhoria
+- Exportar dados de tempo para CSV
+- Atalhos de teclado para ações comuns
+- Dashboard de estatísticas
+- Categorias/tags de cards
 
-### Decisions During Development
-1. **Theme Toggle**: Added based on importance of dark mode
-2. **URL Detection**: Added when noticed users pasting issue links
-3. **Timer Precision**: 1-second granularity sufficient (no milliseconds needed)
-4. **Single Database File**: Simpler than split tables approach
+## Evolução das Decisões do Projeto
 
-### Current Decisions
-1. **No Cloud Sync**: Maintaining local-first philosophy
-2. **Minimal Dependencies**: Keep footprint small
-3. **Simple UI**: Resist feature creep
-4. **Cross-platform First**: All features must work on both platforms
+### Decisões Iniciais (Início do Projeto)
+1. **Python + PyQt6**: Escolhido para UI nativa multi-plataforma
+2. **SQLite**: Selecionado pela simplicidade e abordagem offline-first
+3. **Arquitetura MVC**: Implementada para manutenibilidade
+4. **Auto-save**: Decidido contra save manual para melhorar UX
 
-### Lessons Learned
-1. **User Simplicity**: Less is more - users prefer fewer features done well
-2. **Auto-save Critical**: Users expect automatic data persistence
-3. **Theme Matters**: Dark mode is not optional for developers
-4. **Performance First**: Speed matters more than fancy animations
-5. **Cross-platform Testing**: Test on both platforms before release
+### Decisões Durante o Desenvolvimento
+1. **Alternância de Tema**: Adicionado baseado na importância do modo dark
+2. **Detecção de URL**: Adicionado ao notar usuários colando links de issues
+3. **Precisão do Timer**: Granularidade de 1 segundo suficiente (sem milissegundos)
+4. **Arquivo Único de Banco**: Mais simples que abordagem de tabelas separadas
 
-## Version History
+### Decisões Atuais
+1. **Sem Sincronização na Nuvem**: Mantendo filosofia local-first
+2. **Dependências Mínimas**: Manter footprint pequeno
+3. **UI Simples**: Resistir ao feature creep
+4. **Multi-plataforma Primeiro**: Todos os recursos devem funcionar em ambas plataformas
 
-### Version 1.0 (Current)
-- Full-featured time tracking application
-- Cross-platform support (Linux/Windows)
-- Dark/Light themes
-- Auto-save functionality
-- Standalone executable builds
+### Lições Aprendidas
+1. **Simplicidade do Usuário**: Menos é mais - usuários preferem menos recursos bem feitos
+2. **Auto-save Crítico**: Usuários esperam persistência automática de dados
+3. **Tema Importa**: Modo dark não é opcional para desenvolvedores
+4. **Performance Primeiro**: Velocidade importa mais que animações fancy
+5. **Testes Multi-plataforma**: Testar em ambas plataformas antes do release
 
-### Future Versions (Planned)
-- **1.1**: Export functionality, keyboard shortcuts
-- **1.2**: Statistics and reporting
-- **1.3**: Categories and tags
-- **2.0**: Major UI overhaul with additional features
+## Histórico de Versões
 
-## Metrics & Statistics
+### Versão 1.0 (Atual)
+- Aplicação de rastreamento de tempo completa
+- Suporte multi-plataforma (Linux/Windows)
+- Temas Escuro/Claro
+- Funcionalidade de auto-save
+- Builds de executável standalone
 
-### Code Metrics
-- **Lines of Code**: ~2,000-3,000 (estimated)
-- **Files**: ~15 Python files
-- **Dependencies**: 2 (PyQt6, PyInstaller)
-- **Platforms**: 2 (Linux, Windows)
+### Versões Futuras (Planejadas)
+- **1.1**: Funcionalidade de exportação, atalhos de teclado
+- **1.2**: Estatísticas e relatórios
+- **1.3**: Categorias e tags
+- **2.0**: Grande reformulação de UI com recursos adicionais
 
-### Build Metrics
-- **Build Time**: ~30-60 seconds
-- **Executable Size**: ~50-100MB (includes Python runtime)
-- **Startup Time**: <2 seconds
-- **Memory Usage**: <100MB typical
+## Métricas e Estatísticas
 
-## Next Steps
+### Métricas de Código
+- **Linhas de Código**: ~2.000-3.000 (estimado)
+- **Arquivos**: ~15 arquivos Python
+- **Dependências**: 2 (PyQt6, PyInstaller)
+- **Plataformas**: 2 (Linux, Windows)
 
-### Immediate (Ready to Implement)
-1. Export to CSV functionality
-2. Basic keyboard shortcuts
-3. Improved error handling and logging
-4. Additional documentation
+### Métricas de Build
+- **Tempo de Build**: ~30-60 segundos
+- **Tamanho do Executável**: ~50-100MB (inclui runtime Python)
+- **Tempo de Inicialização**: <2 segundos
+- **Uso de Memória**: <100MB típico
 
-### Short Term (Within Next Release)
-1. Statistics dashboard
-2. Card categories
-3. Search/filter functionality
-4. Undo/Redo support
+## Próximos Passos
 
-### Long Term (Future Versions)
-1. Comprehensive testing suite
-2. Plugin system for extensions
-3. Customizable themes
-4. Advanced reporting
+### Imediato (Pronto para Implementar)
+1. Funcionalidade de exportação para CSV
+2. Atalhos de teclado básicos
+3. Melhorado tratamento de erros e logging
+4. Documentação adicional
 
-## Success Indicators
-- ✅ Application runs stably on Linux and Windows
-- ✅ Timers are accurate and reliable
-- ✅ Zero data loss reported
-- ✅ Users can track multiple tasks simultaneously
-- ✅ UI is intuitive and responsive
-- ✅ Builds successfully create working executables
+### Curto Prazo (Dentro do Próximo Release)
+1. Dashboard de estatísticas
+2. Categorias de cards
+3. Funcionalidade de busca/filtro
+4. Suporte a Desfazer/Refazer
 
-## Project Health
-- **Stability**: Excellent
-- **Performance**: Excellent
-- **Maintainability**: Good
-- **Documentation**: Good
-- **Test Coverage**: Needs improvement
-- **User Satisfaction**: High (inferred from requirements met)
+### Longo Prazo (Versões Futuras)
+1. Suite de testes abrangente
+2. Sistema de plugins para extensões
+3. Temas customizáveis
+4. Relatórios avançados
+
+## Indicadores de Sucesso
+- ✅ Aplicação roda estavelmente em Linux e Windows
+- ✅ Timers são precisos e confiáveis
+- ✅ Zero perda de dados reportada
+- ✅ Usuários podem rastrear múltiplas tarefas simultaneamente
+- ✅ UI é intuitiva e responsiva
+- ✅ Builds criam executáveis funcionais com sucesso
+
+## Saúde do Projeto
+- **Estabilidade**: Excelente
+- **Performance**: Excelente
+- **Manutenibilidade**: Boa
+- **Documentação**: Boa
+- **Cobertura de Testes**: Precisa melhorar
+- **Satisfação do Usuário**: Alta (inferida dos requisitos atendidos)
 
 ---
 
-**Summary**: Time Tracker is a fully functional, stable application that meets its core requirements. The foundation is solid for future enhancements. All critical features are working, and the application is ready for production use.
+**Resumo**: Time Tracker é uma aplicação totalmente funcional e estável que atende seus requisitos principais. A fundação é sólida para futuros aprimoramentos. Todos os recursos críticos estão funcionando, e a aplicação está pronta para uso em produção.

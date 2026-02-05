@@ -1,7 +1,6 @@
 """
 Main Window - View
 """
-from datetime import datetime
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QTableWidget, QHeaderView,
@@ -19,6 +18,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.dark_mode = False
+        self.use_time_difference = False  # Configuração de modo de duração
         self.init_ui()
     
     def init_ui(self):
@@ -97,6 +97,20 @@ class MainWindow(QMainWindow):
         
         header_layout.addLayout(title_container)
         header_layout.addStretch()
+        
+        # Notes button
+        self.notes_btn = QPushButton("📝")
+        self.notes_btn.setObjectName("notesButton")
+        self.notes_btn.setFixedSize(40, 40)
+        self.notes_btn.setToolTip("Open notes")
+        header_layout.addWidget(self.notes_btn)
+        
+        # Settings button
+        self.settings_btn = QPushButton("⚙️")
+        self.settings_btn.setObjectName("settingsButton")
+        self.settings_btn.setFixedSize(40, 40)
+        self.settings_btn.setToolTip("Open settings")
+        header_layout.addWidget(self.settings_btn)
         
         # Theme toggle
         self.theme_btn = QPushButton("🌙")
@@ -199,7 +213,13 @@ class MainWindow(QMainWindow):
         layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
         widget.setLayout(layout)
         
-        time_label = QLabel(card.get_formatted_time())
+        # Escolhe o método de formatação baseado na configuração
+        if self.use_time_difference:
+            time_text = card.get_formatted_time_difference()
+        else:
+            time_text = card.get_formatted_time()
+        
+        time_label = QLabel(time_text)
         time_label.setObjectName("durationLabel")
         time_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(time_label)
@@ -293,7 +313,12 @@ class MainWindow(QMainWindow):
                 if duration_widget:
                     time_label = duration_widget.findChild(QLabel, "durationLabel")
                     if time_label:
-                        time_label.setText(card.get_formatted_time())
+                        # Escolhe o método de formatação baseado na configuração
+                        if self.use_time_difference:
+                            time_text = card.get_formatted_time_difference()
+                        else:
+                            time_text = card.get_formatted_time()
+                        time_label.setText(time_text)
                 
                 # NÃO recria o time range widget - apenas atualiza se mudou de estado
                 time_range_widget = self.table.cellWidget(row, 3)

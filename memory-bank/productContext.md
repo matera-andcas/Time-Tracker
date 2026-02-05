@@ -1,115 +1,115 @@
-# Product Context: Time Tracker
+# Contexto do Produto: Time Tracker
 
-## Why This Project Exists
+## Por Que Este Projeto Existe
 
-### Problem Statement
-Developers and professionals often work on multiple tasks simultaneously and need to track time spent on each. Existing solutions are often:
-- Too complex with unnecessary features
-- Web-based requiring internet connection
-- Heavy on system resources
-- Lack multi-card simultaneous tracking
-- Don't integrate well with workflow
+### Declaração do Problema
+Desenvolvedores e profissionais frequentemente trabalham em múltiplas tarefas simultaneamente e precisam rastrear tempo gasto em cada uma. Soluções existentes são frequentemente:
+- Muito complexas com recursos desnecessários
+- Baseadas na web requerendo conexão à internet
+- Pesadas em recursos do sistema
+- Não possuem rastreamento simultâneo de múltiplos cards
+- Não se integram bem ao workflow
 
-### Solution
-Time Tracker provides a focused, lightweight desktop solution that:
-- Tracks multiple tasks simultaneously
-- Works completely offline
-- Has minimal learning curve
-- Integrates seamlessly into developer workflow
-- Respects system resources
+### Solução
+Time Tracker fornece uma solução desktop focada e leve que:
+- Rastreia múltiplas tarefas simultaneamente
+- Funciona completamente offline
+- Tem curva de aprendizado mínima
+- Integra-se perfeitamente ao workflow do desenvolvedor
+- Respeita recursos do sistema
 
-## How It Should Work
+## Como Deve Funcionar
 
-### User Journey
-1. **Launch Application**: User opens Time Tracker from desktop
-2. **Add Card**: Click "Adicionar Card" to create a new time tracking entry
-3. **Name Card**: Enter task name or paste URL (automatically detected)
-4. **Start Tracking**: Click Play button to start timer
-5. **Work on Task**: Timer runs in background, showing elapsed time
-6. **Pause When Done**: Click Pause to stop timer and record end time
-7. **Switch Tasks**: Can have multiple cards running simultaneously
-8. **Review Time**: See start time, end time, and total elapsed time
-9. **Manage Cards**: Edit names, delete completed tasks, bulk operations
+### Jornada do Usuário
+1. **Lançar Aplicação**: Usuário abre Time Tracker do desktop
+2. **Adicionar Card**: Clicar em "Adicionar Card" para criar nova entrada de rastreamento de tempo
+3. **Nomear Card**: Inserir nome da tarefa ou colar URL (automaticamente detectado)
+4. **Iniciar Rastreamento**: Clicar no botão Play para iniciar o timer
+5. **Trabalhar na Tarefa**: Timer roda em segundo plano, mostrando tempo decorrido
+6. **Pausar Quando Concluir**: Clicar em Pause para parar o timer e gravar hora de término
+7. **Alternar Tarefas**: Pode ter múltiplos cards rodando simultaneamente
+8. **Revisar Tempo**: Ver hora de início, hora de término e tempo total decorrido
+9. **Gerenciar Cards**: Editar nomes, excluir tarefas completas, operações em massa
 
-### Key User Experience Goals
+### Objetivos Chave da Experiência do Usuário
 
-#### Simplicity
-- Clean, uncluttered interface
-- One-click actions for common tasks
-- Clear visual feedback
-- Minimal configuration needed
+#### Simplicidade
+- Interface limpa e descomplicada
+- Ações de um clique para tarefas comuns
+- Feedback visual claro
+- Configuração mínima necessária
 
-#### Speed
-- Fast startup time
-- Responsive UI interactions
-- Quick card creation and management
-- Instant timer updates
+#### Velocidade
+- Tempo de inicialização rápido
+- Interações de UI responsivas
+- Criação e gerenciamento rápido de cards
+- Atualizações instantâneas do timer
 
-#### Reliability
-- Timers must be accurate
-- Data never lost (auto-save)
-- Stable performance
-- Predictable behavior
+#### Confiabilidade
+- Timers devem ser precisos
+- Dados nunca perdidos (auto-save)
+- Performance estável
+- Comportamento previsível
 
-#### Flexibility
-- Work with multiple cards simultaneously
-- Edit card details anytime
-- Choose preferred theme (dark/light)
-- Support for URLs and plain text
+#### Flexibilidade
+- Trabalhar com múltiplos cards simultaneamente
+- Editar detalhes do card a qualquer momento
+- Escolher tema preferido (escuro/claro)
+- Suporte para URLs e texto simples
 
-## User Experience Principles
+## Princípios de Experiência do Usuário
 
-### Visual Design
-- Modern, clean aesthetic
-- Clear hierarchy of information
-- Consistent spacing and alignment
-- Accessible color contrast
-- Theme support (dark/light)
+### Design Visual
+- Estética moderna e limpa
+- Hierarquia clara de informação
+- Espaçamento e alinhamento consistentes
+- Contraste de cores acessível
+- Suporte a temas (escuro/claro)
 
-### Interaction Design
-- Immediate feedback on actions
-- Undo capability where appropriate
-- Confirmation for destructive actions
-- Keyboard shortcuts for efficiency
-- Mouse hover states for clarity
+### Design de Interação
+- Feedback imediato às ações
+- Capacidade de desfazer quando apropriado
+- Confirmação para ações destrutivas
+- Atalhos de teclado para eficiência
+- Estados de hover do mouse para clareza
 
-### Information Architecture
-- Timer display most prominent
-- Start/end times clearly visible
-- Card name editable inline
-- Actions grouped logically
-- Status indicators obvious
+### Arquitetura de Informação
+- Display do timer mais proeminente
+- Horas de início/fim claramente visíveis
+- Nome do card editável inline
+- Ações agrupadas logicamente
+- Indicadores de status óbvios
 
-## Expected Behaviors
+## Comportamentos Esperados
 
-### Timer Functionality
-- Timer starts at 00:00:00 when Play clicked
-- Updates every second while running
-- Pauses at current time when Pause clicked
-- Retains time when switching between cards
-- Continues accurately even if window minimized
+### Funcionalidade do Timer
+- Timer inicia em 00:00:00 quando Play é clicado
+- Atualiza a cada segundo enquanto rodando
+- Pausa no tempo atual quando Pause é clicado
+- Mantém tempo ao alternar entre cards
+- Continua precisamente mesmo se janela minimizada
 
-### Data Persistence
-- Auto-save every 5 seconds
-- No manual save required
-- Data persists across application restarts
-- Database handles concurrent access safely
+### Persistência de Dados
+- Auto-save a cada 5 segundos
+- Sem save manual requerido
+- Dados persistem entre reinicializações da aplicação
+- Banco de dados lida com acesso concorrente com segurança
 
-### URL Handling
-- Automatically detects URLs in card names
-- Makes URLs clickable
-- Opens URLs in default browser
-- Maintains URL formatting
+### Manipulação de URL
+- Detecta automaticamente URLs em nomes de cards
+- Torna URLs clicáveis
+- Abre URLs no navegador padrão
+- Mantém formatação de URL
 
-### Theme System
-- Toggle between dark and light themes
-- Preference saved immediately
-- Applied consistently across all UI
-- Smooth transition between themes
+### Sistema de Temas
+- Alterna entre temas escuro e claro
+- Preferência salva imediatamente
+- Aplicado consistentemente em toda a UI
+- Transição suave entre temas
 
-## Quality Standards
-- Zero data loss
-- Timer accuracy within 1 second
-- Application startup under 2 seconds
-- Smooth UI animations
-- No blocking operations in UI thread
+## Padrões de Qualidade
+- Zero perda de dados
+- Precisão do timer dentro de 1 segundo
+- Inicialização da aplicação abaixo de 2 segundos
+- Animações de UI suaves
+- Sem operações bloqueantes na thread de UI

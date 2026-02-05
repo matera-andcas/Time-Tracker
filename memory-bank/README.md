@@ -1,133 +1,133 @@
 # Memory Bank: Time Tracker
 
-This directory contains the Memory Bank for the Time Tracker project - a comprehensive documentation system designed to preserve project context across development sessions.
+Este diretório contém o Memory Bank do projeto Time Tracker - um sistema abrangente de documentação projetado para preservar o contexto do projeto através das sessões de desenvolvimento.
 
-## Purpose
+## Propósito
 
-The Memory Bank serves as the single source of truth for:
-- Project goals and requirements
-- System architecture and patterns
-- Technical decisions and constraints
-- Current work status and progress
-- Development insights and learnings
+O Memory Bank serve como a única fonte de verdade para:
+- Objetivos e requisitos do projeto
+- Arquitetura e padrões do sistema
+- Decisões técnicas e restrições
+- Status de trabalho atual e progresso
+- Insights e aprendizados de desenvolvimento
 
-## Core Files
+## Arquivos Principais
 
 ### 📋 [projectbrief.md](./projectbrief.md)
-**Foundation document** - Defines core requirements, goals, scope, and success criteria for the Time Tracker project. This is the source of truth that shapes all other documentation.
+**Documento fundamental** - Define requisitos essenciais, objetivos, escopo e critérios de sucesso do projeto Time Tracker. Esta é a fonte de verdade que molda toda a documentação.
 
 ### 🎯 [productContext.md](./productContext.md)
-**Product vision** - Explains why Time Tracker exists, what problems it solves, and how it should work from a user perspective. Defines UX goals and quality standards.
+**Visão do produto** - Explica por que o Time Tracker existe, quais problemas resolve e como deve funcionar da perspectiva do usuário. Define objetivos de UX e padrões de qualidade.
 
 ### 🏗️ [systemPatterns.md](./systemPatterns.md)
-**Technical architecture** - Documents the MVC architecture, design patterns, component relationships, and critical implementation paths. Essential for understanding code structure.
+**Arquitetura técnica** - Documenta a arquitetura MVC, padrões de design, relacionamentos de componentes e caminhos críticos de implementação. Essencial para entender a estrutura do código.
 
 ### 🔧 [techContext.md](./techContext.md)
-**Technology details** - Covers the full technology stack (Python, PyQt6, SQLite), development setup, tools, and platform-specific considerations.
+**Detalhes tecnológicos** - Cobre toda a stack tecnológica (Python, PyQt6, SQLite), configuração de desenvolvimento, ferramentas e considerações específicas de plataforma.
 
 ### 📍 [activeContext.md](./activeContext.md)
-**Current state** - Tracks immediate work focus, recent changes, active decisions, important patterns, and learnings. Updated frequently to reflect current development status.
+**Estado atual** - Rastreia o foco de trabalho imediato, mudanças recentes, decisões ativas, padrões importantes e aprendizados. Atualizado frequentemente para refletir o status atual de desenvolvimento.
 
 ### 📊 [progress.md](./progress.md)
-**Project status** - Documents what works, what's left to build, known issues, version history, and evolution of project decisions.
+**Status do projeto** - Documenta o que funciona, o que falta construir, problemas conhecidos, histórico de versões e evolução das decisões do projeto.
 
-## File Relationships
+## Relacionamento entre Arquivos
 
 ```
-projectbrief.md (foundation)
-    ├── productContext.md (product vision)
-    ├── systemPatterns.md (architecture)
-    └── techContext.md (technology)
+projectbrief.md (fundação)
+    ├── productContext.md (visão do produto)
+    ├── systemPatterns.md (arquitetura)
+    └── techContext.md (tecnologia)
             ↓
-    activeContext.md (current work)
+    activeContext.md (trabalho atual)
             ↓
-    progress.md (status tracking)
+    progress.md (rastreamento de status)
 ```
 
-## When to Update
+## Quando Atualizar
 
-### Always Update When:
-1. 🎯 Starting a new feature or major task
-2. ✅ Completing significant work
-3. 💡 Discovering important patterns or insights
-4. 🔄 Making architectural or technical decisions
-5. 📢 User requests with "**update memory bank**"
+### Sempre Atualizar Quando:
+1. 🎯 Iniciar uma nova funcionalidade ou tarefa importante
+2. ✅ Completar trabalho significativo
+3. 💡 Descobrir padrões ou insights importantes
+4. 🔄 Fazer decisões arquiteturais ou técnicas
+5. 📢 Usuário solicitar com "**atualizar memory bank**"
 
-### Files to Update Most Frequently:
-- **activeContext.md**: Current work, recent changes, active decisions
-- **progress.md**: Completed work, known issues, status updates
+### Arquivos para Atualizar com Mais Frequência:
+- **activeContext.md**: Trabalho atual, mudanças recentes, decisões ativas
+- **progress.md**: Trabalho completado, problemas conhecidos, atualizações de status
 
-### Files to Update Occasionally:
-- **systemPatterns.md**: New patterns or architectural changes
-- **techContext.md**: Technology stack changes or new tools
-- **productContext.md**: UX insights or behavior clarifications
+### Arquivos para Atualizar Ocasionalmente:
+- **systemPatterns.md**: Novos padrões ou mudanças arquiteturais
+- **techContext.md**: Mudanças na stack tecnológica ou novas ferramentas
+- **productContext.md**: Insights de UX ou clarificações de comportamento
 
-### Rarely Changed:
-- **projectbrief.md**: Core project definition (only update if scope changes)
+### Raramente Alterados:
+- **projectbrief.md**: Definição central do projeto (atualizar apenas se o escopo mudar)
 
-## How to Use
+## Como Usar
 
-### Starting a New Session
-1. Read `projectbrief.md` to understand project foundation
-2. Review `activeContext.md` for current work status
-3. Check `progress.md` for completed work and known issues
-4. Reference `systemPatterns.md` and `techContext.md` as needed
+### Iniciando uma Nova Sessão
+1. Leia `projectbrief.md` para entender a fundação do projeto
+2. Revise `activeContext.md` para status do trabalho atual
+3. Verifique `progress.md` para trabalho completado e problemas conhecidos
+4. Referencie `systemPatterns.md` e `techContext.md` conforme necessário
 
-### During Development
-1. Note important discoveries and patterns
-2. Document decisions as they're made
-3. Track progress on current tasks
+### Durante o Desenvolvimento
+1. Anote descobertas e padrões importantes
+2. Documente decisões conforme são tomadas
+3. Acompanhe o progresso nas tarefas atuais
 
-### After Major Work
-1. Update `activeContext.md` with changes and learnings
-2. Update `progress.md` with completed milestones
-3. Update other files if patterns or architecture changed
+### Após Trabalho Importante
+1. Atualize `activeContext.md` com mudanças e aprendizados
+2. Atualize `progress.md` com marcos completados
+3. Atualize outros arquivos se padrões ou arquitetura mudaram
 
-### When User Says "Update Memory Bank"
-1. Review **ALL** memory bank files
-2. Update current state and progress
-3. Document insights and patterns discovered
-4. Clarify next steps and considerations
+### Quando Usuário Diz "Atualizar Memory Bank"
+1. Revise **TODOS** os arquivos do memory bank
+2. Atualize estado atual e progresso
+3. Documente insights e padrões descobertos
+4. Clarifique próximos passos e considerações
 
-## Guidelines
+## Diretrizes
 
-### Writing Style
-- **Clear and concise**: Direct language, no fluff
-- **Specific and actionable**: Concrete details, not vague descriptions
-- **Context-rich**: Explain "why" behind decisions
-- **Future-oriented**: Write for someone picking up the project fresh
+### Estilo de Escrita
+- **Claro e conciso**: Linguagem direta, sem enrolação
+- **Específico e acionável**: Detalhes concretos, não descrições vagas
+- **Rico em contexto**: Explique o "porquê" por trás das decisões
+- **Orientado ao futuro**: Escreva para alguém pegando o projeto do zero
 
-### Content Principles
-- **Accuracy**: Information must be correct and up-to-date
-- **Completeness**: Include all essential context
-- **Consistency**: Use consistent terminology across files
-- **Relevance**: Focus on what matters for development
+### Princípios de Conteúdo
+- **Precisão**: Informação deve ser correta e atualizada
+- **Completude**: Incluir todo contexto essencial
+- **Consistência**: Usar terminologia consistente entre arquivos
+- **Relevância**: Focar no que importa para o desenvolvimento
 
-### Maintenance
-- Keep files under 500 lines when possible
-- Archive old information if it becomes irrelevant
-- Create additional context files for complex topics
-- Regular review to ensure accuracy
+### Manutenção
+- Manter arquivos com menos de 500 linhas quando possível
+- Arquivar informação antiga se se tornar irrelevante
+- Criar arquivos de contexto adicionais para tópicos complexos
+- Revisão regular para garantir precisão
 
-## Additional Context Files
+## Arquivos de Contexto Adicionais
 
-As the project grows, create additional files for:
-- Feature-specific documentation
-- Integration specifications
-- API documentation
-- Testing strategies
-- Deployment procedures
+Conforme o projeto cresce, criar arquivos adicionais para:
+- Documentação específica de funcionalidades
+- Especificações de integração
+- Documentação de API
+- Estratégias de teste
+- Procedimentos de deploy
 
-Place them in the `memory-bank/` directory with clear, descriptive names.
+Colocá-los no diretório `memory-bank/` com nomes claros e descritivos.
 
-## Benefits
+## Benefícios
 
-✅ **Consistency**: Maintain project understanding across sessions
-✅ **Efficiency**: Quick onboarding for new work
-✅ **Quality**: Better decisions with full context
-✅ **Collaboration**: Clear documentation for team members
-✅ **Continuity**: No lost context between sessions
+✅ **Consistência**: Manter entendimento do projeto entre sessões
+✅ **Eficiência**: Rápida adaptação para novo trabalho
+✅ **Qualidade**: Melhores decisões com contexto completo
+✅ **Colaboração**: Documentação clara para membros da equipe
+✅ **Continuidade**: Nenhum contexto perdido entre sessões
 
 ---
 
-**Note**: The Memory Bank is a living documentation system. It should evolve with the project, always reflecting the current state and providing actionable context for future work.
+**Nota**: O Memory Bank é um sistema de documentação vivo. Deve evoluir com o projeto, sempre refletindo o estado atual e fornecendo contexto acionável para trabalho futuro.

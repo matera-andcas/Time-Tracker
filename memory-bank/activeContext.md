@@ -1,174 +1,188 @@
-# Active Context: Time Tracker
+# Contexto Ativo: Time Tracker
 
-**Last Updated**: 2026-01-27
-**Current Phase**: Maintenance & Enhancement
-**Status**: Stable, Functional
+**Última Atualização**: 2026-02-03
+**Fase Atual**: Refinamento de UI/UX e Harmonização de Tema
+**Status**: Estável, Visualmente Aprimorado
 
-## Current Work Focus
+## Foco de Trabalho Atual
 
-### Immediate Tasks
-1. Memory Bank initialization complete
-2. Project documentation established
-3. Ready for new feature requests or bug fixes
+### Recentemente Completado (2026-02-03)
+1. ✅ Harmonização completa do tema dark para diálogos de Time Picker e Calendário
+2. ✅ Corrigido problema de truncamento de números no SpinBox
+3. ✅ Implementados botões de seta customizados com símbolos Unicode (▲ ▼)
+4. ✅ Separador ":" centralizado verticalmente no Time Picker
+5. ✅ Aplicada herança de stylesheet do parent aos diálogos
+6. ✅ Paleta de cores unificada entre todos os componentes de diálogo
 
-### Next Steps
-- Await user direction for:
-  - New features to implement
-  - Bugs to fix
-  - Performance improvements
-  - UI/UX enhancements
-  - Platform-specific optimizations
+### Tarefas Imediatas
+- Monitorar feedback do usuário sobre os novos refinamentos de UI
+- Pronto para novas solicitações de recursos ou polimento adicional
 
-## Recent Changes
-- Memory Bank structure created with all core files
-- Project documentation comprehensive and up-to-date
-- Custom instructions configured for memory persistence
+### Próximos Passos
+- Aguardar direcionamento do usuário para:
+  - Aprimoramentos adicionais de UI/UX
+  - Novos recursos a implementar
+  - Bugs a corrigir
+  - Melhorias de performance
+  - Otimizações específicas de plataforma
 
-## Active Decisions & Considerations
+## Mudanças Recentes
+- Estrutura do Memory Bank criada com todos os arquivos principais
+- Documentação do projeto completa e atualizada
+- Instruções customizadas configuradas para persistência de memória
 
-### Architecture Decisions
-- **MVC Pattern**: Maintaining strict separation between layers
-- **PyQt6**: Committed to this framework for foreseeable future
-- **SQLite**: Local-first approach, no plans for cloud sync
+## Decisões e Considerações Ativas
 
-### Design Decisions
-- **Theme System**: Dark/light toggle sufficient for now
-- **Auto-save**: 5-second interval balanced between safety and performance
-- **Timer Precision**: 1-second granularity meets user needs
+### Decisões Arquiteturais
+- **Padrão MVC**: Mantendo separação rigorosa entre camadas
+- **PyQt6**: Comprometidos com este framework para o futuro previsível
+- **SQLite**: Abordagem local-first, sem planos para sincronização na nuvem
 
-### Technical Decisions
-- **Single File Database**: Simplifies backup and portability
-- **No External Dependencies**: Keep minimal dependency footprint
-- **Cross-platform First**: All features must work on Linux and Windows
+### Decisões de Design
+- **Sistema de Temas**: Alternância dark/light suficiente por enquanto
+- **Auto-save**: Intervalo de 5 segundos equilibrado entre segurança e performance
+- **Precisão do Timer**: Granularidade de 1 segundo atende às necessidades do usuário
 
-## Important Patterns & Preferences
+### Decisões Técnicas
+- **Banco de Dados em Arquivo Único**: Simplifica backup e portabilidade
+- **Sem Dependências Externas**: Manter footprint mínimo de dependências
+- **Cross-platform Primeiro**: Todos os recursos devem funcionar em Linux e Windows
 
-### Code Style
-- **Clear Separation**: Keep MVC layers distinct
-- **Type Hints**: Use when helpful for clarity
-- **Docstrings**: Document all public methods
-- **Comments**: Explain "why" not "what"
+## Padrões e Preferências Importantes
 
-### UI/UX Patterns
-- **Immediate Feedback**: All actions provide visual response
-- **No Hidden State**: User always knows what's happening
-- **Consistent Spacing**: Use layouts, not hardcoded positions
-- **Theme Consistency**: All custom widgets support both themes
+### Estilo de Código
+- **Separação Clara**: Manter camadas MVC distintas
+- **Type Hints**: Usar quando útil para clareza
+- **Docstrings**: Documentar todos os métodos públicos
+- **Comentários**: Explicar o "porquê" não o "o quê"
 
-### Data Patterns
-- **Auto-save Everything**: User never thinks about saving
-- **Preserve State**: Application remembers settings
-- **Fail Gracefully**: Never lose user data
+### Padrões de UI/UX
+- **Feedback Imediato**: Todas as ações fornecem resposta visual
+- **Sem Estado Oculto**: Usuário sempre sabe o que está acontecendo
+- **Espaçamento Consistente**: Usar layouts, não posições codificadas
+- **Consistência de Tema**: Todos os widgets customizados suportam ambos os temas
+- **Herança de Diálogo**: Diálogos herdam stylesheet do parent para consistência de tema
+- **Controles Customizados**: Usar QPushButton para melhor controle sobre ícones/símbolos
+- **Harmonia Visual**: Paleta de cores unificada em todos os elementos de UI
 
-### Development Patterns
-- **Test on Both Platforms**: Changes must work on Linux and Windows
-- **Build Before Release**: Always test standalone executable
-- **Document Changes**: Update relevant memory bank files
+### Padrões de Dados
+- **Auto-save de Tudo**: Usuário nunca pensa em salvar
+- **Preservar Estado**: Aplicação lembra configurações
+- **Falhar Graciosamente**: Nunca perder dados do usuário
 
-## Project Insights & Learnings
+### Padrões de Desenvolvimento
+- **Testar em Ambas Plataformas**: Mudanças devem funcionar em Linux e Windows
+- **Build Antes do Release**: Sempre testar executável standalone
+- **Documentar Mudanças**: Atualizar arquivos relevantes do memory bank
 
-### What Works Well
-1. **PyQt6 Integration**: Signal/slot system is elegant and reliable
-2. **SQLite Persistence**: Zero-configuration database perfect for this use case
-3. **Timer Implementation**: QTimer provides accurate, low-overhead updates
-4. **Theme System**: Simple toggle meets user needs without complexity
-5. **Auto-save**: Users love not thinking about saving
+## Insights e Aprendizados do Projeto
 
-### Key Discoveries
-1. **URL Detection**: Users often paste issue URLs as card names
-2. **Multiple Cards**: Users frequently track 3-5 tasks simultaneously
-3. **Theme Preference**: Persistent theme selection is highly valued
-4. **One-click Actions**: Minimizing clicks improves user satisfaction
-5. **Visual Feedback**: Hover states and button animations matter
+### O Que Funciona Bem
+1. **Integração PyQt6**: Sistema de sinais/slots é elegante e confiável
+2. **Persistência SQLite**: Banco de dados zero-configuration perfeito para este caso de uso
+3. **Implementação do Timer**: QTimer fornece atualizações precisas e de baixo overhead
+4. **Sistema de Temas**: Alternância simples atende necessidades do usuário sem complexidade
+5. **Auto-save**: Usuários adoram não pensar em salvar
 
-### Technical Learnings
-1. **QTimer Reliability**: More reliable than Python's threading.Timer
-2. **SQLite Row Factory**: Using Row factory simplifies data access
-3. **PyInstaller Quirks**: Spec file needed for icon and metadata
-4. **Cross-platform Paths**: Always use os.path.join or pathlib
-5. **Virtual Environments**: Essential for consistent builds
+### Descobertas Chave
+1. **Detecção de URL**: Usuários frequentemente colam URLs de issues como nomes de cards
+2. **Múltiplos Cards**: Usuários frequentemente rastreiam 3-5 tarefas simultaneamente
+3. **Preferência de Tema**: Seleção de tema persistente é altamente valorizada
+4. **Ações de Um Clique**: Minimizar cliques melhora satisfação do usuário
+5. **Feedback Visual**: Estados de hover e animações de botões importam
 
-### User Preferences (Inferred)
-- Minimalist UI preferred
-- Dark theme is primary choice
-- Speed matters more than features
-- Reliability is critical
-- No configuration desired
+### Aprendizados Técnicos
+1. **Confiabilidade do QTimer**: Mais confiável que threading.Timer do Python
+2. **SQLite Row Factory**: Usar Row factory simplifica acesso a dados
+3. **Peculiaridades do PyInstaller**: Arquivo spec necessário para ícone e metadados
+4. **Caminhos Cross-platform**: Sempre usar os.path.join ou pathlib
+5. **Ambientes Virtuais**: Essenciais para builds consistentes
+6. **Estilização de QDialog**: Diálogos não herdam automaticamente stylesheets, deve aplicar parent.styleSheet()
+7. **Botões Customizados no SpinBox**: Triângulos CSS não confiáveis, usar QPushButton com símbolos Unicode
+8. **Alinhamento de Widgets**: Usar layouts de container com spacing ao invés de alinhamento direto
+9. **Harmonização de Tema**: Cores de fundo unificadas criam coesão visual
 
-## Known Issues & Considerations
+### Preferências do Usuário (Inferidas)
+- UI minimalista preferida
+- Tema dark é a escolha primária
+- Velocidade importa mais que recursos
+- Confiabilidade é crítica
+- Sem configuração desejada
 
-### Current Limitations
-1. No cloud sync (by design)
-2. No export functionality yet
-3. No reporting/analytics
-4. No keyboard shortcuts
-5. No undo functionality
+## Problemas Conhecidos e Considerações
 
-### Future Enhancement Ideas
-1. Export time data to CSV
-2. Keyboard shortcuts for common actions
-3. Statistics/reporting dashboard
-4. Card categories or tags
-5. Time goal tracking
-6. Notification on timer milestones
+### Limitações Atuais
+1. Sem sincronização na nuvem (por design)
+2. Sem funcionalidade de exportação ainda
+3. Sem relatórios/analytics
+4. Sem atalhos de teclado
+5. Sem funcionalidade de desfazer
 
-### Platform-Specific Considerations
-- **Linux**: Desktop file integration works well
-- **Windows**: EXE builds cleanly with PyInstaller
-- **Both**: Font rendering differences acceptable
+### Ideias de Aprimoramento Futuro
+1. Exportar dados de tempo para CSV
+2. Atalhos de teclado para ações comuns
+3. Dashboard de estatísticas/relatórios
+4. Categorias ou tags de cards
+5. Rastreamento de metas de tempo
+6. Notificação em marcos de timer
 
-## Development Environment State
+### Considerações Específicas de Plataforma
+- **Linux**: Integração com arquivo .desktop funciona bem
+- **Windows**: Builds de EXE limpamente com PyInstaller
+- **Ambos**: Diferenças de renderização de fonte aceitáveis
 
-### Current Setup
-- Virtual environment with PyQt6 6.6.0+
-- Python 3.8+ (tested on 3.10+)
-- PyInstaller 6.0.0+ for builds
-- All dependencies in requirements.txt
+## Estado do Ambiente de Desenvolvimento
 
-### Build Status
-- Build scripts functional for both platforms
-- Executable tested and working
-- Icon integration successful
+### Setup Atual
+- Ambiente virtual com PyQt6 6.6.0+
+- Python 3.8+ (testado no 3.10+)
+- PyInstaller 6.0.0+ para builds
+- Todas as dependências em requirements.txt
 
-### Database State
-- Schema stable
-- No migrations needed currently
-- Data persistence reliable
+### Status do Build
+- Scripts de build funcionais para ambas plataformas
+- Executável testado e funcionando
+- Integração de ícone bem-sucedida
 
-## Communication Patterns
+### Estado do Banco de Dados
+- Schema estável
+- Sem migrações necessárias atualmente
+- Persistência de dados confiável
 
-### With Users
-- Keep technical jargon minimal
-- Focus on functionality, not implementation
-- Provide clear, actionable feedback
-- Document workarounds when needed
+## Padrões de Comunicação
 
-### In Code
-- Self-documenting code preferred
-- Comments for complex logic only
-- Docstrings for all public APIs
-- Clear variable names
+### Com Usuários
+- Manter jargão técnico mínimo
+- Focar em funcionalidade, não implementação
+- Fornecer feedback claro e acionável
+- Documentar workarounds quando necessário
 
-## Context for Future Sessions
+### No Código
+- Código auto-documentado preferido
+- Comentários apenas para lógica complexa
+- Docstrings para todas as APIs públicas
+- Nomes de variáveis claros
 
-### Quick Start Reference
-- **Main Entry**: `main.py`
+## Contexto para Sessões Futuras
+
+### Referência Rápida
+- **Entrada Principal**: `main.py`
 - **Controller**: `src/application/controller.py`
 - **UI**: `src/ui/main_window.py`
 - **Database**: `src/infrastructure/database.py`
 - **Models**: `src/domain/models.py`
 
-### Common Tasks
-1. **Add Feature**: Start in controller, add UI in main_window, update models/database as needed
-2. **Fix Bug**: Identify layer (UI/Controller/Database), isolate issue, fix and test
-3. **Update UI**: Modify `main_window.py` and `styles.py`, ensure theme support
-4. **Schema Change**: Update `database.py`, add migration logic, test thoroughly
+### Tarefas Comuns
+1. **Adicionar Recurso**: Começar no controller, adicionar UI em main_window, atualizar models/database conforme necessário
+2. **Corrigir Bug**: Identificar camada (UI/Controller/Database), isolar problema, corrigir e testar
+3. **Atualizar UI**: Modificar `main_window.py` e `styles.py`, garantir suporte a tema
+4. **Mudança de Schema**: Atualizar `database.py`, adicionar lógica de migração, testar completamente
 
-### Key Files to Reference
-- `README.md`: User documentation
-- `requirements.txt`: Dependencies
-- `TimeTracker.spec`: Build configuration
-- Memory Bank files: Project context and decisions
+### Arquivos Chave para Referência
+- `README.md`: Documentação do usuário
+- `requirements.txt`: Dependências
+- `TimeTracker.spec`: Configuração de build
+- Arquivos do Memory Bank: Contexto e decisões do projeto
 
-## Ready for Next Task
-The application is stable and functional. Memory Bank is complete and ready to guide future development. Awaiting user input for next enhancement or fix.
+## Pronto para Próxima Tarefa
+A aplicação está estável e funcional. Memory Bank está completo e pronto para guiar desenvolvimento futuro. Aguardando input do usuário para próximo aprimoramento ou correção.

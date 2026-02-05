@@ -1,284 +1,284 @@
-# System Patterns: Time Tracker
+# Padrões do Sistema: Time Tracker
 
-## Architecture Overview
+## Visão Geral da Arquitetura
 
-### Architecture Style
-**Model-View-Controller (MVC)** pattern with clear separation of concerns:
-- **Model**: Domain entities and business logic
-- **View**: PyQt6 UI components
-- **Controller**: Application coordination and state management
+### Estilo Arquitetural
+Padrão **Model-View-Controller (MVC)** com clara separação de responsabilidades:
+- **Model**: Entidades de domínio e lógica de negócio
+- **View**: Componentes de UI PyQt6
+- **Controller**: Coordenação de aplicação e gerenciamento de estado
 
-### Directory Structure
+### Estrutura de Diretórios
 ```
 timeTracker/
-├── main.py                 # Application entry point
+├── main.py                 # Ponto de entrada da aplicação
 ├── src/
-│   ├── config.py          # Configuration constants
-│   ├── application/       # Controller layer
+│   ├── config.py          # Constantes de configuração
+│   ├── application/       # Camada de controller
 │   │   └── controller.py
-│   ├── domain/            # Business logic layer
+│   ├── domain/            # Camada de lógica de negócio
 │   │   ├── models.py
 │   │   └── services.py
-│   ├── infrastructure/    # Data persistence layer
+│   ├── infrastructure/    # Camada de persistência de dados
 │   │   └── database.py
-│   └── ui/                # View layer
+│   └── ui/                # Camada de view
 │       ├── main_window.py
 │       ├── styles.py
 │       ├── time_widgets.py
 │       └── widgets.py
-├── utils/                 # Utility scripts
-├── docs/                  # Documentation
-└── build/                 # Build artifacts
+├── utils/                 # Scripts utilitários
+├── docs/                  # Documentação
+└── build/                 # Artefatos de build
 ```
 
-## Key Technical Decisions
+## Decisões Técnicas Chave
 
-### 1. Framework Choice: PyQt6
-**Why**: 
-- Native performance and look-and-feel
-- Cross-platform support (Linux/Windows)
-- Rich widget library
-- Signal/slot mechanism for event handling
-- Mature and well-documented
+### 1. Escolha de Framework: PyQt6
+**Por quê**: 
+- Performance nativa e aparência nativa
+- Suporte multi-plataforma (Linux/Windows)
+- Biblioteca rica de widgets
+- Mecanismo de sinais/slots para tratamento de eventos
+- Maduro e bem documentado
 
-**Implications**:
-- Requires PyQt6 dependency
-- Uses Qt event loop
-- Threading considerations for background tasks
+**Implicações**:
+- Requer dependência PyQt6
+- Usa event loop do Qt
+- Considerações de threading para tarefas em segundo plano
 
-### 2. Database: SQLite
-**Why**:
-- Serverless, file-based database
-- Zero configuration
-- Built into Python
-- Perfect for single-user desktop apps
-- Reliable ACID transactions
+### 2. Banco de Dados: SQLite
+**Por quê**:
+- Banco de dados sem servidor, baseado em arquivo
+- Zero configuração
+- Integrado ao Python
+- Perfeito para apps desktop de usuário único
+- Transações ACID confiáveis
 
-**Implications**:
-- Local data only (no cloud sync)
-- File locking considerations
-- Schema migrations handled manually
+**Implicações**:
+- Dados apenas locais (sem sincronização na nuvem)
+- Considerações de bloqueio de arquivo
+- Migrações de schema tratadas manualmente
 
-### 3. Timer Implementation
-**Decision**: QTimer-based updates every 1000ms
-**Why**:
-- Integrates with Qt event loop
-- Accurate enough for second-level precision
-- Low CPU overhead
-- Reliable across platforms
+### 3. Implementação do Timer
+**Decisão**: Atualizações baseadas em QTimer a cada 1000ms
+**Por quê**:
+- Integra com event loop do Qt
+- Preciso o suficiente para precisão de nível de segundo
+- Baixo overhead de CPU
+- Confiável entre plataformas
 
-### 4. Build System: PyInstaller
-**Why**:
-- Creates standalone executables
-- Cross-platform support
-- Bundles all dependencies
-- Simple configuration with .spec file
+### 4. Sistema de Build: PyInstaller
+**Por quê**:
+- Cria executáveis standalone
+- Suporte multi-plataforma
+- Empacota todas as dependências
+- Configuração simples com arquivo .spec
 
-## Design Patterns in Use
+## Padrões de Design em Uso
 
 ### 1. MVC (Model-View-Controller)
-**Implementation**:
-- `models.py`: Data models (Card, TimeEntry)
-- `main_window.py`: View components
-- `controller.py`: Orchestration and business logic
+**Implementação**:
+- `models.py`: Modelos de dados (Card, TimeEntry)
+- `main_window.py`: Componentes de view
+- `controller.py`: Orquestração e lógica de negócio
 
-### 2. Repository Pattern
-**Implementation**: `database.py`
-- Abstracts data access
-- Provides CRUD operations
-- Handles database connections
-- Encapsulates SQLite specifics
+### 2. Padrão Repository
+**Implementação**: `database.py`
+- Abstrai acesso a dados
+- Fornece operações CRUD
+- Manipula conexões de banco de dados
+- Encapsula especificidades do SQLite
 
-### 3. Service Layer
-**Implementation**: `services.py`
-- Business logic for time calculations
-- Card management operations
-- Validation rules
-- Domain operations
+### 3. Camada de Serviço
+**Implementação**: `services.py`
+- Lógica de negócio para cálculos de tempo
+- Operações de gerenciamento de cards
+- Regras de validação
+- Operações de domínio
 
-### 4. Observer Pattern (Qt Signals/Slots)
-**Implementation**:
-- UI events trigger signals
-- Slots handle business logic
-- Decouples UI from logic
-- Example: Play button → start_timer signal → Controller slot
+### 4. Padrão Observer (Sinais/Slots Qt)
+**Implementação**:
+- Eventos de UI disparam sinais
+- Slots tratam lógica de negócio
+- Desacopla UI da lógica
+- Exemplo: Botão Play → sinal start_timer → Slot do Controller
 
-## Component Relationships
+## Relacionamentos de Componentes
 
-### Core Components
+### Componentes Principais
 
 #### 1. TimeTrackerController (application/controller.py)
-**Responsibilities**:
-- Initialize application
-- Coordinate between UI and domain
-- Handle user actions
-- Manage application state
-- Control auto-save timer
+**Responsabilidades**:
+- Inicializar aplicação
+- Coordenar entre UI e domínio
+- Tratar ações do usuário
+- Gerenciar estado da aplicação
+- Controlar timer de auto-save
 
-**Dependencies**:
+**Dependências**:
 - MainWindow (UI)
 - CardService (domain)
 - DatabaseManager (infrastructure)
 
 #### 2. MainWindow (ui/main_window.py)
-**Responsibilities**:
-- Display UI components
-- Emit user action signals
-- Update display based on data
-- Manage theme switching
+**Responsabilidades**:
+- Exibir componentes de UI
+- Emitir sinais de ações do usuário
+- Atualizar display baseado em dados
+- Gerenciar alternância de tema
 
-**Dependencies**:
+**Dependências**:
 - CardWidget (ui/widgets.py)
-- Styles module (ui/styles.py)
+- Módulo Styles (ui/styles.py)
 
 #### 3. CardService (domain/services.py)
-**Responsibilities**:
-- Business logic for cards
-- Time calculations
-- Validation
-- Card state management
+**Responsabilidades**:
+- Lógica de negócio para cards
+- Cálculos de tempo
+- Validação
+- Gerenciamento de estado de card
 
-**Dependencies**:
-- Card model (domain/models.py)
+**Dependências**:
+- Modelo Card (domain/models.py)
 - DatabaseManager (infrastructure)
 
 #### 4. DatabaseManager (infrastructure/database.py)
-**Responsibilities**:
-- Database initialization
-- CRUD operations
-- Connection management
-- Data persistence
+**Responsabilidades**:
+- Inicialização do banco de dados
+- Operações CRUD
+- Gerenciamento de conexão
+- Persistência de dados
 
-**Dependencies**:
-- Card model (domain/models.py)
+**Dependências**:
+- Modelo Card (domain/models.py)
 - SQLite
 
-## Critical Implementation Paths
+## Caminhos Críticos de Implementação
 
-### 1. Application Startup Flow
+### 1. Fluxo de Inicialização da Aplicação
 ```
 main.py
-  → QApplication initialization
-  → TimeTrackerController creation
+  → Inicialização do QApplication
+  → Criação do TimeTrackerController
     → DatabaseManager.initialize()
-    → MainWindow creation
-    → Load existing cards from database
-    → Display UI
-  → Event loop starts
+    → Criação do MainWindow
+    → Carregar cards existentes do banco de dados
+    → Exibir UI
+  → Event loop inicia
 ```
 
-### 2. Card Creation Flow
+### 2. Fluxo de Criação de Card
 ```
-User clicks "Adicionar Card"
-  → MainWindow emits add_card signal
+Usuário clica "Adicionar Card"
+  → MainWindow emite sinal add_card
   → Controller.on_add_card()
-    → Create Card model
+    → Criar modelo Card
     → CardService.validate()
     → DatabaseManager.insert_card()
     → MainWindow.add_card_widget()
 ```
 
-### 3. Timer Start Flow
+### 3. Fluxo de Início do Timer
 ```
-User clicks Play button
-  → CardWidget emits start_timer signal
+Usuário clica botão Play
+  → CardWidget emite sinal start_timer
   → Controller.on_start_timer(card_id)
-    → Update card.start_time
-    → Start QTimer for this card
+    → Atualizar card.start_time
+    → Iniciar QTimer para este card
     → DatabaseManager.update_card()
     → CardWidget.update_display()
 ```
 
-### 4. Auto-Save Flow
+### 4. Fluxo de Auto-Save
 ```
-Every 5 seconds
+A cada 5 segundos
   → QTimer timeout
   → Controller.auto_save()
-    → For each modified card
+    → Para cada card modificado
       → DatabaseManager.update_card()
-    → Clear modification flags
+    → Limpar flags de modificação
 ```
 
-### 5. Theme Toggle Flow
+### 5. Fluxo de Alternância de Tema
 ```
-User clicks theme button
+Usuário clica botão de tema
   → MainWindow.toggle_theme()
-    → Update is_dark_mode flag
+    → Atualizar flag is_dark_mode
     → styles.apply_theme(window, is_dark_mode)
-    → Save preference to database
-    → Refresh all widgets
+    → Salvar preferência no banco de dados
+    → Atualizar todos os widgets
 ```
 
-## Data Flow Patterns
+## Padrões de Fluxo de Dados
 
-### Read Operations
+### Operações de Leitura
 ```
-UI Request → Controller → Service → Database → Model → Service → Controller → UI
-```
-
-### Write Operations
-```
-UI Action → Controller → Service (validate) → Database (persist) → UI (update display)
+Requisição UI → Controller → Service → Database → Model → Service → Controller → UI
 ```
 
-### Timer Updates
+### Operações de Escrita
 ```
-QTimer tick → Controller → Calculate elapsed → UI update (no database write until pause)
+Ação UI → Controller → Service (validar) → Database (persistir) → UI (atualizar display)
 ```
 
-## Threading Considerations
+### Atualizações de Timer
+```
+Tick QTimer → Controller → Calcular decorrido → Atualização UI (sem escrita em banco até pausar)
+```
 
-### Main Thread (UI Thread)
-- All UI operations
-- Timer updates
-- User interactions
+## Considerações de Threading
 
-### Background Operations
-- Currently all operations synchronous
-- Future: Database operations could be threaded
-- Auto-save already on timer (non-blocking)
+### Thread Principal (Thread de UI)
+- Todas operações de UI
+- Atualizações de timer
+- Interações do usuário
 
-## Error Handling Strategy
+### Operações em Segundo Plano
+- Atualmente todas operações síncronas
+- Futuro: Operações de banco de dados poderiam usar threads
+- Auto-save já em timer (não-bloqueante)
 
-### Database Errors
-- Catch SQLite exceptions
-- Log errors
-- Show user-friendly message
-- Graceful degradation
+## Estratégia de Tratamento de Erros
 
-### UI Errors
-- Qt exception handling
-- Prevent crashes
-- Maintain application state
+### Erros de Banco de Dados
+- Capturar exceções SQLite
+- Logar erros
+- Mostrar mensagem amigável ao usuário
+- Degradação graciosa
 
-### Timer Errors
-- Validate time calculations
-- Handle clock changes
-- Prevent negative durations
+### Erros de UI
+- Tratamento de exceções do Qt
+- Prevenir crashes
+- Manter estado da aplicação
 
-## Configuration Management
+### Erros de Timer
+- Validar cálculos de tempo
+- Tratar mudanças de relógio
+- Prevenir durações negativas
 
-### Constants (config.py)
-- Database path
-- Auto-save interval
-- Default theme
-- Window dimensions
-- Application metadata
+## Gerenciamento de Configuração
 
-### User Preferences
-- Theme selection
-- Window position/size
-- Stored in database
+### Constantes (config.py)
+- Caminho do banco de dados
+- Intervalo de auto-save
+- Tema padrão
+- Dimensões da janela
+- Metadados da aplicação
 
-## Testing Strategy
+### Preferências do Usuário
+- Seleção de tema
+- Posição/tamanho da janela
+- Armazenado no banco de dados
 
-### Manual Testing
-- Cross-platform testing (Linux/Windows)
-- UI interaction testing
-- Timer accuracy validation
-- Data persistence verification
+## Estratégia de Testes
 
-### Future Considerations
-- Unit tests for services
-- Integration tests for database
-- UI automation tests
+### Testes Manuais
+- Testes multi-plataforma (Linux/Windows)
+- Testes de interação de UI
+- Validação de precisão do timer
+- Verificação de persistência de dados
+
+### Considerações Futuras
+- Testes unitários para serviços
+- Testes de integração para banco de dados
+- Testes de automação de UI

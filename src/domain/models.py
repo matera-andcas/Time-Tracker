@@ -74,6 +74,64 @@ class Card:
         seconds = total_seconds % 60
         return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
     
+    def get_time_difference_seconds(self) -> int:
+        """
+        Calcula a duração como diferença entre end_time e start_time.
+        Se estiver rodando, usa o horário atual como end_time.
+        Retorna 0 se não houver start_time.
+        """
+        if not self.start_time:
+            return 0
+        
+        try:
+            # Parse start_time
+            start_parts = self.start_time.split(':')
+            start_hours = int(start_parts[0])
+            start_minutes = int(start_parts[1])
+            start_total_minutes = start_hours * 60 + start_minutes
+            
+            # Determina end_time (ou horário atual se estiver rodando)
+            if self.is_running:
+                now = datetime.now()
+                end_hours = now.hour
+                end_minutes = now.minute
+                end_seconds = now.second
+            elif self.end_time:
+                end_parts = self.end_time.split(':')
+                end_hours = int(end_parts[0])
+                end_minutes = int(end_parts[1])
+                end_seconds = 0
+            else:
+                # Sem end_time e não rodando, retorna 0
+                return 0
+            
+            end_total_minutes = end_hours * 60 + end_minutes
+            
+            # Calcula diferença
+            diff_minutes = end_total_minutes - start_total_minutes
+            
+            # Se negativo, assume que passou da meia-noite
+            if diff_minutes < 0:
+                diff_minutes += 24 * 60
+            
+            # Converte para segundos (adiciona segundos se estiver rodando)
+            total_seconds = diff_minutes * 60
+            if self.is_running:
+                total_seconds += end_seconds
+            
+            return total_seconds
+            
+        except (ValueError, IndexError):
+            return 0
+    
+    def get_formatted_time_difference(self) -> str:
+        """Retorna a diferença de tempo formatada como HH:MM:SS"""
+        total_seconds = self.get_time_difference_seconds()
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        seconds = total_seconds % 60
+        return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+    
     def reset(self):
         """Reseta o timer do card"""
         self.elapsed_seconds = 0

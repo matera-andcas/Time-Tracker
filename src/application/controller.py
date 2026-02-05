@@ -1,6 +1,7 @@
 """
 Application Controller - Orchestrates UI, Domain and Infrastructure
 """
+from datetime import datetime
 from typing import List
 from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtWidgets import QMessageBox
@@ -30,6 +31,10 @@ class TimeTrackerController:
         dark_mode = self.db.get_setting('dark_mode', 'false') == 'true'
         self.view.set_dark_mode(dark_mode)
         
+        # Carregar configuração de modo de duração
+        self.use_time_difference = self.db.get_setting('use_time_difference', 'false') == 'true'
+        self.view.use_time_difference = self.use_time_difference
+        
         # Primeira renderização
         self.refresh_view()
     
@@ -39,6 +44,8 @@ class TimeTrackerController:
         self.view.delete_btn.clicked.connect(self.on_delete_selected)
         self.view.select_all_cb.stateChanged.connect(self.on_select_all)
         self.view.theme_btn.clicked.connect(self.on_toggle_theme)
+        self.view.settings_btn.clicked.connect(self.on_open_settings)
+        self.view.notes_btn.clicked.connect(self.on_open_notes)
     
     def setup_timers(self):
         """Configura os timers de atualização"""
@@ -97,9 +104,7 @@ class TimeTrackerController:
     
     def on_add_card(self):
         """Handler para adicionar card"""
-        from datetime import datetime
         card = self.card_service.add_card()
-        # Define a data de criação se não existir
         if not card.created_date:
             card.created_date = datetime.now().strftime("%d/%m/%y")
         card_data = card.to_dict()
@@ -119,49 +124,46 @@ class TimeTrackerController:
         if not self.card_service.has_selected_cards():
             return
         
-        # Contar quantos cards estão selecionados
-        selected_count = len([c for c in self.cards if c.is_selected])
+        selected_count = sum(1 for c in self.cards if c.is_selected)
+        message = "Deseja realmente excluir este card?" if selected_count == 1 else f"Deseja realmente excluir {selected_count} cards?"
         
-        # Criar diálogo de confirmação
+        if not self._show_delete_confirmation(message):
+            return
+        
+        # Deletar do banco antes de remover da lista
+        for card in [c for c in self.cards if c.is_selected]:
+            if card.db_id:
+                self.db.delete_card(card.db_id)
+        
+        self.card_service.remove_selected_cards()
+        self.view.select_all_cb.setChecked(False)
+        self.refresh_view()
+    
+    def _show_delete_confirmation(self, message: str) -> bool:
+        """Mostra diálogo de confirmação de exclusão"""
         msg = QMessageBox(self.view)
         msg.setWindowTitle("Delete")
-        
-        if selected_count == 1:
-            msg.setText("Deseja realmente excluir este card?")
-        else:
-            msg.setText(f"Deseja realmente excluir {selected_count} cards?")
-        
+        msg.setText(message)
         msg.setIcon(QMessageBox.Icon.Warning)
-        msg.setStandardButtons(
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-        )
+        msg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         msg.setDefaultButton(QMessageBox.StandardButton.Yes)
         
-        # Customizar textos dos botões (sem ícones)
         yes_btn = msg.button(QMessageBox.StandardButton.Yes)
         no_btn = msg.button(QMessageBox.StandardButton.No)
         yes_btn.setText("Excluir")
         no_btn.setText("Cancelar")
-        yes_btn.setIcon(yes_btn.style().standardIcon(yes_btn.style().StandardPixmap.SP_CustomBase))
-        no_btn.setIcon(no_btn.style().standardIcon(no_btn.style().StandardPixmap.SP_CustomBase))
-        
-        # Identificar botão para estilização CSS
         yes_btn.setObjectName("deleteConfirmButton")
+        
+        # Remover ícones dos botões
+        empty_icon = yes_btn.style().standardIcon(yes_btn.style().StandardPixmap.SP_CustomBase)
+        yes_btn.setIcon(empty_icon)
+        no_btn.setIcon(empty_icon)
         
         # Forçar aplicação do stylesheet
         yes_btn.style().unpolish(yes_btn)
         yes_btn.style().polish(yes_btn)
         
-        # Mostrar diálogo e verificar resposta
-        if msg.exec() == QMessageBox.StandardButton.Yes:
-            # Deletar do banco antes de remover da lista
-            for card in [c for c in self.cards if c.is_selected]:
-                if card.db_id:
-                    self.db.delete_card(card.db_id)
-            
-            self.card_service.remove_selected_cards()
-            self.view.select_all_cb.setChecked(False)
-            self.refresh_view()
+        return msg.exec() == QMessageBox.StandardButton.Yes
     
     def on_select_all(self, state):
         """Handler para select all"""
@@ -173,6 +175,34 @@ class TimeTrackerController:
         new_mode = not self.view.dark_mode
         self.view.set_dark_mode(new_mode)
         self.db.save_setting('dark_mode', 'true' if new_mode else 'false')
+    
+    def on_open_settings(self):
+        """Handler para abrir janela de configurações"""
+        from src.ui.settings_dialog import SettingsDialog
+        
+        dialog = SettingsDialog(self.view, self.use_time_difference)
+        if dialog.exec():
+            # Usuário clicou em Save
+            new_value = dialog.get_use_time_difference()
+            if new_value != self.use_time_difference:
+                self.use_time_difference = new_value
+                self.view.use_time_difference = new_value
+                self.db.save_setting('use_time_difference', 'true' if new_value else 'false')
+                # Atualiza a view para refletir a mudança
+                self.refresh_view()
+    
+    def on_open_notes(self):
+        """Handler para abrir janela de notas"""
+        from src.ui.notes_dialog import NotesDialog
+        
+        # Carrega notas do banco
+        notes = self.db.load_notes()
+        
+        dialog = NotesDialog(self.view, notes)
+        if dialog.exec():
+            # Usuário fechou o diálogo, salva as notas
+            updated_notes = dialog.get_notes()
+            self.db.save_notes_batch(updated_notes)
     
     def on_card_selected(self, card: Card, state):
         """Handler para seleção de card"""
