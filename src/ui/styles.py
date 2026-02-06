@@ -269,8 +269,8 @@ def get_light_stylesheet() -> str:
             font-size: 16px;
             font-weight: 700;
             color: #1a1a1a;
-            font-family: 'Consolas', 'Monaco', monospace;
             padding: 2px 0px;
+            letter-spacing: 1.0px;
         }
         
         QLabel#dateLabel {
@@ -368,12 +368,12 @@ def get_light_stylesheet() -> str:
         }
         
         QLabel#timePickerSeparator {
-            color: #adb5bd;
+            color: #495057;
             padding: 0px 8px;
         }
         
         QSpinBox#timePickerSpinBox {
-            background-color: #f8f9fa;
+            background-color: #ffffff;
             border: 2px solid #dee2e6;
             border-radius: 8px;
             padding: 8px 36px 8px 8px;
@@ -381,13 +381,13 @@ def get_light_stylesheet() -> str:
         }
         
         QSpinBox#timePickerSpinBox:focus {
-            border-color: #007bff;
+            border-color: #000023;
             background-color: #ffffff;
         }
         
         QPushButton#timePickerCustomButton {
             background-color: transparent;
-            color: #007bff;
+            color: #000023;
             border: none;
             border-radius: 4px;
             font-size: 14px;
@@ -396,19 +396,19 @@ def get_light_stylesheet() -> str:
         }
         
         QPushButton#timePickerCustomButton:hover {
-            background-color: #e7f1ff;
-            color: #0056b3;
+            background-color: rgba(0, 0, 35, 0.08);
+            color: #000023;
         }
         
         QPushButton#timePickerCustomButton:pressed {
-            background-color: #cce5ff;
+            background-color: rgba(0, 0, 35, 0.15);
         }
         
         QPushButton#timePickerOkButton {
-            background-color: #007bff;
+            background-color: #000023;
             color: #ffffff;
             padding: 10px 24px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
             border: none;
@@ -416,17 +416,21 @@ def get_light_stylesheet() -> str:
         }
         
         QPushButton#timePickerOkButton:hover {
-            background-color: #0056b3;
+            background-color: #1a2847;
+        }
+        
+        QPushButton#timePickerOkButton:pressed {
+            background-color: #00001a;
         }
         
         QPushButton#timePickerCancelButton {
             background-color: transparent;
             color: #6c757d;
             padding: 10px 24px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
-            border: 1px solid #dee2e6;
+            border: 2px solid #dee2e6;
             outline: none;
         }
         
@@ -436,44 +440,126 @@ def get_light_stylesheet() -> str:
         }
         
         QPushButton#timePickerNowButton {
-            background-color: #e7f3ff;
-            color: #007bff;
+            background-color: #f8f9fa;
+            color: #000023;
             padding: 10px 20px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 13px;
-            border: 1px solid #cce5ff;
+            border: 1px solid #dee2e6;
             outline: none;
         }
         
         QPushButton#timePickerNowButton:hover {
-            background-color: #cce5ff;
-            border-color: #99cfff;
-        }
-        
-        /* Calendar Dialog Container */
-        QWidget#calendarDialogContainer {
-            background-color: #ffffff;
-            border-radius: 16px;
-            border: 1px solid #e9ecef;
-        }
-        
-        QLabel#calendarDialogTitle {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a1a1a;
-            padding: 0px;
-        }
-        
-        QLabel#calendarDateDisplay {
-            font-size: 14px;
-            font-weight: 500;
-            color: #007bff;
-            padding: 0px;
-        }
-        
-        QLabel#calendarDivider {
             background-color: #e9ecef;
+            border-color: #adb5bd;
+        }
+        
+        /* Time Picker Dialog - Nova Identidade Visual */
+        QDialog#timePickerDialog {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+        }
+        
+        QWidget#timePickerDialogHeader {
+            background-color: #000023;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        
+        QWidget#timePickerDialogContent {
+            background-color: #f8f9fa;
+        }
+        
+        QWidget#timePickerDialogFooter {
+            background-color: #ffffff;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        QLabel#timePickerDialogTitle {
+            font-size: 24px;
+            font-weight: 700;
+            color: #6BFF50;
+        }
+        
+        QLabel#timePickerDialogSubtitle {
+            font-size: 13px;
+            color: #ffffff;
+            font-weight: 400;
+        }
+        
+        /* Date Picker Dialog - Nova Identidade Visual */
+        QDialog#dateEditDialog {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+        }
+        
+        QWidget#datePickerDialogHeader {
+            background-color: #000023;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        
+        QWidget#datePickerDialogContent {
+            background-color: #f8f9fa;
+        }
+        
+        QWidget#datePickerDialogFooter {
+            background-color: #ffffff;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        QLabel#datePickerDialogTitle {
+            font-size: 24px;
+            font-weight: 700;
+            color: #6BFF50;
+        }
+        
+        QLabel#datePickerDialogSubtitle {
+            font-size: 13px;
+            color: #ffffff;
+            font-weight: 400;
+        }
+        
+        QPushButton#datePickerCancelButton {
+            background-color: transparent;
+            color: #6c757d;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            border: 2px solid #dee2e6;
+            outline: none;
+        }
+        
+        QPushButton#datePickerCancelButton:hover {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+        }
+        
+        QPushButton#datePickerOkButton {
+            background-color: #000023;
+            color: #ffffff;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            outline: none;
+        }
+        
+        QPushButton#datePickerOkButton:hover {
+            background-color: #1a2847;
+        }
+        
+        QPushButton#datePickerOkButton:pressed {
+            background-color: #00001a;
         }
         
         /* Modern Calendar Widget */
@@ -499,17 +585,27 @@ def get_light_stylesheet() -> str:
         }
         
         QCalendarWidget#modernCalendar QToolButton:hover {
-            background-color: #f0f8ff;
-            color: #007bff;
+            background-color: rgba(107, 255, 80, 0.1);
+            color: #000023;
         }
         
         QCalendarWidget#modernCalendar QToolButton:pressed {
-            background-color: #e7f1ff;
+            background-color: rgba(107, 255, 80, 0.2);
         }
         
         QCalendarWidget#modernCalendar QToolButton::menu-indicator {
             image: none;
             width: 0px;
+        }
+        
+        QCalendarWidget#modernCalendar QToolButton#qt_calendar_prevmonth {
+            qproperty-icon: url(icon/arrow-prev-light.svg);
+            qproperty-iconSize: 20px;
+        }
+        
+        QCalendarWidget#modernCalendar QToolButton#qt_calendar_nextmonth {
+            qproperty-icon: url(icon/arrow-next-light.svg);
+            qproperty-iconSize: 20px;
         }
         
         QCalendarWidget#modernCalendar QMenu {
@@ -525,8 +621,8 @@ def get_light_stylesheet() -> str:
         }
         
         QCalendarWidget#modernCalendar QMenu::item:selected {
-            background-color: #f0f8ff;
-            color: #007bff;
+            background-color: rgba(107, 255, 80, 0.15);
+            color: #000023;
         }
         
         QCalendarWidget#modernCalendar QSpinBox {
@@ -551,8 +647,8 @@ def get_light_stylesheet() -> str:
         
         QCalendarWidget#modernCalendar QAbstractItemView {
             background-color: #ffffff;
-            selection-background-color: #007bff;
-            selection-color: #ffffff;
+            selection-background-color: #000023;
+            selection-color: #6BFF50;
             border: none;
             outline: none;
             padding: 4px;
@@ -574,13 +670,13 @@ def get_light_stylesheet() -> str:
         }
         
         QCalendarWidget#modernCalendar QAbstractItemView::item:hover {
-            background-color: #f0f8ff;
-            color: #007bff;
+            background-color: rgba(107, 255, 80, 0.12);
+            color: #000023;
         }
         
         QCalendarWidget#modernCalendar QAbstractItemView::item:selected {
-            background-color: #007bff;
-            color: #ffffff;
+            background-color: #000023;
+            color: #6BFF50;
             font-weight: 600;
         }
         
@@ -592,7 +688,7 @@ def get_light_stylesheet() -> str:
         
         QCalendarWidget#modernCalendar QHeaderView::section {
             background-color: transparent;
-            color: #6c757d;
+            color: #000023;
             padding: 12px 8px;
             border: none;
             font-weight: 700;
@@ -636,7 +732,7 @@ def get_light_stylesheet() -> str:
         }
         
         QPushButton#calendarOkButton {
-            background-color: #007bff;
+            background-color: #000023;
             color: #ffffff;
             padding: 10px 24px;
             border-radius: 8px;
@@ -647,11 +743,11 @@ def get_light_stylesheet() -> str:
         }
         
         QPushButton#calendarOkButton:hover {
-            background-color: #0056b3;
+            background-color: #1a2847;
         }
         
         QPushButton#calendarOkButton:pressed {
-            background-color: #004085;
+            background-color: #00001a;
         }
         
         /* Calendar Widget */
@@ -694,13 +790,13 @@ def get_light_stylesheet() -> str:
         }
         
         QCalendarWidget#calendarWidget QSpinBox:focus {
-            border-color: #007bff;
+            border-color: #000023;
             background-color: #ffffff;
         }
         
         QCalendarWidget#calendarWidget QAbstractItemView {
             background-color: #ffffff;
-            selection-background-color: #007bff;
+            selection-background-color: #000023;
             selection-color: #ffffff;
             border: none;
             outline: none;
@@ -760,7 +856,7 @@ def get_light_stylesheet() -> str:
         }
         
         QMessageBox QPushButton:default {
-            background-color: #007bff;
+            background-color: #000023;
             color: #ffffff;
             border: none;
         }
@@ -1311,12 +1407,12 @@ def get_dark_stylesheet() -> str:
         }
         
         QCheckBox::indicator:hover {
-            border-color: #1f6feb;
+            border-color: #000023;
         }
         
         QCheckBox::indicator:checked {
-            background-color: #1f6feb;
-            border-color: #1f6feb;
+            background-color: #000023;
+            border-color: #000023;
             image: url(none);
         }
         
@@ -1327,10 +1423,10 @@ def get_dark_stylesheet() -> str:
         /* Labels */
         QLabel#durationLabel {
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 600;
             color: #e6edf3;
-            font-family: 'Consolas', 'Monaco', monospace;
             padding: 2px 0px;
+            letter-spacing: 1.0px;
         }
         
         QLabel#dateLabel {
@@ -1390,36 +1486,40 @@ def get_dark_stylesheet() -> str:
             background-color: #161b22;
         }
         
-        /* Time Picker Dialog - Harmonious Dark Design */
+        /* Time Picker Dialog - Nova Identidade Visual Dark */
         QDialog#timePickerDialog {
             background-color: #0d1117;
-        }
-        
-        QWidget#timePickerContainer {
-            background-color: #0d1117;
+            border: 2px solid #30363d;
             border-radius: 12px;
         }
         
-        QWidget#timePickerHeader {
-            background-color: #0d1117;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
+        QWidget#timePickerDialogHeader {
+            background-color: #000023;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
         }
         
-        QWidget#timePickerFooter {
+        QWidget#timePickerDialogContent {
             background-color: #0d1117;
-            border-bottom-left-radius: 12px;
-            border-bottom-right-radius: 12px;
         }
         
-        QLabel#timePickerTitle {
-            color: #e6edf3;
+        QWidget#timePickerDialogFooter {
+            background-color: #161b22;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            border-top: 1px solid #21262d;
+        }
+        
+        QLabel#timePickerDialogTitle {
+            font-size: 24px;
             font-weight: 700;
+            color: #6BFF50;
         }
         
-        QLabel#timePickerSubtitle {
-            color: #7d8590;
-            font-weight: 500;
+        QLabel#timePickerDialogSubtitle {
+            font-size: 13px;
+            color: #ffffff;
+            font-weight: 400;
         }
         
         QLabel#timePickerLabel {
@@ -1427,28 +1527,20 @@ def get_dark_stylesheet() -> str:
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.5px;
         }
         
         QLabel#timePickerSeparator {
-            color: #58a6ff;
-            font-weight: 700;
+            color: #8b949e;
             padding: 0px 8px;
         }
         
         QSpinBox#timePickerSpinBox {
             background-color: #161b22;
-            border: 2px solid #21262d;
+            border: 2px solid #30363d;
             border-radius: 8px;
-            padding: 10px 36px 10px 20px;
+            padding: 8px 36px 8px 8px;
             color: #e6edf3;
-            font-size: 16px;
-            font-weight: 600;
-        }
-        
-        QSpinBox#timePickerSpinBox:hover {
-            border-color: #30363d;
-            background-color: #161b22;
         }
         
         QSpinBox#timePickerSpinBox:focus {
@@ -1476,10 +1568,10 @@ def get_dark_stylesheet() -> str:
         }
         
         QPushButton#timePickerOkButton {
-            background-color: #238636;
+            background-color: #000023;
             color: #ffffff;
             padding: 10px 24px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
             border: none;
@@ -1487,21 +1579,21 @@ def get_dark_stylesheet() -> str:
         }
         
         QPushButton#timePickerOkButton:hover {
-            background-color: #2ea043;
+            background-color: #1a2847;
         }
         
         QPushButton#timePickerOkButton:pressed {
-            background-color: #1a7f37;
+            background-color: #00001a;
         }
         
         QPushButton#timePickerCancelButton {
             background-color: transparent;
             color: #8b949e;
             padding: 10px 24px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
-            border: 1px solid #21262d;
+            border: 2px solid #21262d;
             outline: none;
         }
         
@@ -1511,15 +1603,11 @@ def get_dark_stylesheet() -> str:
             color: #c9d1d9;
         }
         
-        QPushButton#timePickerCancelButton:pressed {
-            background-color: #21262d;
-        }
-        
         QPushButton#timePickerNowButton {
             background-color: #161b22;
             color: #58a6ff;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 13px;
             border: 1px solid #30363d;
@@ -1531,36 +1619,76 @@ def get_dark_stylesheet() -> str:
             border-color: #58a6ff;
         }
         
-        QPushButton#timePickerNowButton:pressed {
-            background-color: #0d1117;
-        }
-        
-        /* Calendar Dialog - Harmonious Dark Design */
+        /* Date Picker Dialog - Nova Identidade Visual Dark */
         QDialog#dateEditDialog {
             background-color: #0d1117;
+            border: 2px solid #30363d;
+            border-radius: 12px;
         }
         
-        QWidget#calendarDialogContainer {
+        QWidget#datePickerDialogHeader {
+            background-color: #000023;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        
+        QWidget#datePickerDialogContent {
             background-color: #0d1117;
-            border-radius: 16px;
         }
         
-        QLabel#calendarDialogTitle {
-            font-size: 20px;
+        QWidget#datePickerDialogFooter {
+            background-color: #161b22;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            border-top: 1px solid #21262d;
+        }
+        
+        QLabel#datePickerDialogTitle {
+            font-size: 24px;
             font-weight: 700;
-            color: #e6edf3;
-            padding: 0px;
+            color: #6BFF50;
         }
         
-        QLabel#calendarDateDisplay {
+        QLabel#datePickerDialogSubtitle {
+            font-size: 13px;
+            color: #ffffff;
+            font-weight: 400;
+        }
+        
+        QPushButton#datePickerCancelButton {
+            background-color: transparent;
+            color: #8b949e;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
             font-size: 14px;
-            font-weight: 500;
-            color: #58a6ff;
-            padding: 0px;
+            border: 2px solid #21262d;
+            outline: none;
         }
         
-        QLabel#calendarDivider {
-            background-color: #21262d;
+        QPushButton#datePickerCancelButton:hover {
+            background-color: #161b22;
+            border-color: #30363d;
+            color: #c9d1d9;
+        }
+        
+        QPushButton#datePickerOkButton {
+            background-color: #000023;
+            color: #ffffff;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            outline: none;
+        }
+        
+        QPushButton#datePickerOkButton:hover {
+            background-color: #1a2847;
+        }
+        
+        QPushButton#datePickerOkButton:pressed {
+            background-color: #00001a;
         }
         
         /* Modern Calendar Widget - Harmonious Dark */
@@ -1586,17 +1714,27 @@ def get_dark_stylesheet() -> str:
         }
         
         QCalendarWidget#modernCalendar QToolButton:hover {
-            background-color: #161b22;
-            color: #58a6ff;
+            background-color: rgba(107, 255, 80, 0.1);
+            color: #6BFF50;
         }
         
         QCalendarWidget#modernCalendar QToolButton:pressed {
-            background-color: #21262d;
+            background-color: rgba(107, 255, 80, 0.15);
         }
         
         QCalendarWidget#modernCalendar QToolButton::menu-indicator {
             image: none;
             width: 0px;
+        }
+        
+        QCalendarWidget#modernCalendar QToolButton#qt_calendar_prevmonth {
+            qproperty-icon: url(icon/arrow-prev-dark.svg);
+            qproperty-iconSize: 20px;
+        }
+        
+        QCalendarWidget#modernCalendar QToolButton#qt_calendar_nextmonth {
+            qproperty-icon: url(icon/arrow-next-dark.svg);
+            qproperty-iconSize: 20px;
         }
         
         QCalendarWidget#modernCalendar QMenu {
@@ -1613,8 +1751,8 @@ def get_dark_stylesheet() -> str:
         }
         
         QCalendarWidget#modernCalendar QMenu::item:selected {
-            background-color: #21262d;
-            color: #58a6ff;
+            background-color: rgba(107, 255, 80, 0.15);
+            color: #6BFF50;
         }
         
         QCalendarWidget#modernCalendar QSpinBox {
@@ -1628,13 +1766,13 @@ def get_dark_stylesheet() -> str:
         }
         
         QCalendarWidget#modernCalendar QSpinBox:hover {
-            background-color: #161b22;
+            background-color: rgba(107, 255, 80, 0.05);
             border-radius: 6px;
         }
         
         QCalendarWidget#modernCalendar QSpinBox:focus {
-            background-color: #161b22;
-            border: 1px solid #58a6ff;
+            background-color: rgba(107, 255, 80, 0.1);
+            border: 1px solid #6BFF50;
             border-radius: 6px;
         }
         
@@ -1645,8 +1783,8 @@ def get_dark_stylesheet() -> str:
         
         QCalendarWidget#modernCalendar QAbstractItemView {
             background-color: #0d1117;
-            selection-background-color: #58a6ff;
-            selection-color: #ffffff;
+            selection-background-color: #6BFF50;
+            selection-color: #000023;
             border: none;
             outline: none;
             padding: 4px;
@@ -1668,13 +1806,13 @@ def get_dark_stylesheet() -> str:
         }
         
         QCalendarWidget#modernCalendar QAbstractItemView::item:hover {
-            background-color: #161b22;
-            color: #58a6ff;
+            background-color: rgba(107, 255, 80, 0.1);
+            color: #6BFF50;
         }
         
         QCalendarWidget#modernCalendar QAbstractItemView::item:selected {
-            background-color: #58a6ff;
-            color: #ffffff;
+            background-color: #6BFF50;
+            color: #000023;
             font-weight: 600;
         }
         
@@ -1686,13 +1824,13 @@ def get_dark_stylesheet() -> str:
         
         QCalendarWidget#modernCalendar QHeaderView::section {
             background-color: transparent;
-            color: #8b949e;
+            color: #6BFF50;
             padding: 12px 8px;
             border: none;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.5px;
         }
         
         /* Calendar Action Buttons - Harmonious Dark */
@@ -1700,7 +1838,7 @@ def get_dark_stylesheet() -> str:
             background-color: #161b22;
             color: #8b949e;
             padding: 8px 16px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 13px;
             border: none;
@@ -1720,10 +1858,10 @@ def get_dark_stylesheet() -> str:
             background-color: transparent;
             color: #8b949e;
             padding: 10px 24px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
-            border: 1px solid #21262d;
+            border: 2px solid #21262d;
             outline: none;
         }
         
@@ -1738,10 +1876,10 @@ def get_dark_stylesheet() -> str:
         }
         
         QPushButton#calendarOkButton {
-            background-color: #238636;
+            background-color: #000023;
             color: #ffffff;
             padding: 10px 24px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
             border: none;
@@ -1749,11 +1887,11 @@ def get_dark_stylesheet() -> str:
         }
         
         QPushButton#calendarOkButton:hover {
-            background-color: #2ea043;
+            background-color: #1a2847;
         }
         
         QPushButton#calendarOkButton:pressed {
-            background-color: #1a7f37;
+            background-color: #00001a;
         }
         
         /* Calendar Widget */
@@ -1862,13 +2000,13 @@ def get_dark_stylesheet() -> str:
         }
         
         QMessageBox QPushButton:default {
-            background-color: #238636;
+            background-color: #000023;
             color: #ffffff;
             border: none;
         }
         
         QMessageBox QPushButton:default:hover {
-            background-color: #2ea043;
+            background-color: #1a2847;
         }
         
         /* Botão de confirmação de exclusão (vermelho) */

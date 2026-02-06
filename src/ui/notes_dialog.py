@@ -1,49 +1,14 @@
 """
 Notes Dialog - Notepad for tags and descriptions
 """
-import os
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, 
     QPushButton, QWidget, QTableWidget, QHeaderView,
     QLineEdit, QAbstractItemView, QMessageBox
 )
-from PyQt6.QtCore import Qt, QByteArray, QSize
-from PyQt6.QtGui import QGuiApplication, QIcon, QPixmap, QPainter
-from PyQt6.QtSvg import QSvgRenderer
-
-
-def get_icon_path(filename: str) -> str:
-    """Retorna o caminho completo para um arquivo de ícone"""
-    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    return os.path.join(base_dir, 'icon', filename)
-
-
-def create_colored_icon(svg_filename: str, color: str = "#000023", size: int = 24) -> QIcon:
-    """Cria um QIcon a partir de um arquivo SVG com cor customizada"""
-    svg_path = get_icon_path(svg_filename)
-    
-    try:
-        with open(svg_path, 'r') as f:
-            svg_content = f.read()
-        
-        # Substitui a cor do fill no SVG
-        svg_content = svg_content.replace('fill="#1C274C"', f'fill="{color}"')
-        
-        # Cria um QPixmap a partir do SVG modificado
-        svg_bytes = QByteArray(svg_content.encode())
-        renderer = QSvgRenderer(svg_bytes)
-        
-        pixmap = QPixmap(size, size)
-        pixmap.fill(Qt.GlobalColor.transparent)
-        
-        painter = QPainter(pixmap)
-        renderer.render(painter)
-        painter.end()
-        
-        return QIcon(pixmap)
-    except Exception as e:
-        print(f"Erro ao carregar ícone {svg_filename}: {e}")
-        return QIcon()
+from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtGui import QGuiApplication
+from .icon_utils import create_colored_icon
 
 
 class NotesDialog(QDialog):
@@ -169,12 +134,6 @@ class NotesDialog(QDialog):
         layout.setSpacing(12)
         footer.setLayout(layout)
         
-        # Botão Add Note
-        add_btn = QPushButton("+ Add Note")
-        add_btn.setObjectName("notesAddButton")
-        add_btn.clicked.connect(self.on_add_note)
-        layout.addWidget(add_btn)
-        
         layout.addStretch()
         
         # Botão Close
@@ -182,6 +141,12 @@ class NotesDialog(QDialog):
         close_btn.setObjectName("notesCloseButton")
         close_btn.clicked.connect(self.accept)
         layout.addWidget(close_btn)
+        
+        # Botão Add Note
+        add_btn = QPushButton("+ Add Note")
+        add_btn.setObjectName("notesAddButton")
+        add_btn.clicked.connect(self.on_add_note)
+        layout.addWidget(add_btn)
         
         return footer
     

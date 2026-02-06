@@ -1,49 +1,14 @@
 """
 Time Widgets - Interactive time display and picker components
 """
-import os
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
-    QDialog, QSpinBox, QPushButton, QTimeEdit, QCalendarWidget
+    QDialog, QSpinBox, QPushButton, QTimeEdit, QCalendarWidget, QToolButton
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QTime, QByteArray, QSize
-from PyQt6.QtGui import QCursor, QFont, QIcon, QPixmap, QPainter
-from PyQt6.QtSvg import QSvgRenderer
+from PyQt6.QtCore import Qt, pyqtSignal, QTime, QSize
+from PyQt6.QtGui import QCursor, QFont, QIcon
 from datetime import datetime
-
-
-def get_icon_path(filename: str) -> str:
-    """Retorna o caminho completo para um arquivo de ícone"""
-    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    return os.path.join(base_dir, 'icon', filename)
-
-
-def create_colored_icon(svg_filename: str, color: str = "#000023", size: int = 24) -> QIcon:
-    """Cria um QIcon a partir de um arquivo SVG com cor customizada"""
-    svg_path = get_icon_path(svg_filename)
-    
-    try:
-        with open(svg_path, 'r') as f:
-            svg_content = f.read()
-        
-        # Substitui a cor do fill no SVG
-        svg_content = svg_content.replace('fill="#1C274C"', f'fill="{color}"')
-        
-        # Cria um QPixmap a partir do SVG modificado
-        svg_bytes = QByteArray(svg_content.encode())
-        renderer = QSvgRenderer(svg_bytes)
-        
-        pixmap = QPixmap(size, size)
-        pixmap.fill(Qt.GlobalColor.transparent)
-        
-        painter = QPainter(pixmap)
-        renderer.render(painter)
-        painter.end()
-        
-        return QIcon(pixmap)
-    except Exception as e:
-        print(f"Erro ao carregar ícone {svg_filename}: {e}")
-        return QIcon()
+from .icon_utils import create_colored_icon, get_icon_path
 
 
 class PaddedSpinBox(QSpinBox):
@@ -107,23 +72,71 @@ class TimePickerDialog(QDialog):
     def init_ui(self):
         """Inicializa a interface moderna do time picker"""
         self.setModal(True)
-        self.setFixedSize(320, 300)
+        self.setFixedSize(420, 420)
         
-        # Container principal
+        # Layout principal sem margens
         main_layout = QVBoxLayout()
-        main_layout.setContentsMargins(24, 20, 24, 20)
-        main_layout.setSpacing(16)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
         self.setLayout(main_layout)
         
-        # Subtitle
-        subtitle = QLabel("Select hours and minutes")
-        subtitle.setObjectName("timePickerSubtitle")
-        subtitle_font = subtitle.font()
-        subtitle_font.setPointSize(10)
-        subtitle.setFont(subtitle_font)
-        main_layout.addWidget(subtitle)
+        # Header
+        header = self.create_header()
+        main_layout.addWidget(header)
         
-        main_layout.addSpacing(8)
+        # Content
+        content = self.create_content()
+        main_layout.addWidget(content, 1)
+        
+        # Footer
+        footer = self.create_footer()
+        main_layout.addWidget(footer)
+    
+    def create_header(self) -> QWidget:
+        """Cria o cabeçalho do diálogo"""
+        # Container principal sem margens para linha ocupar toda largura
+        header = QWidget()
+        header.setObjectName("timePickerDialogHeader")
+        
+        main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+        header.setLayout(main_layout)
+        
+        # Widget de conteúdo com margens
+        content_widget = QWidget()
+        content_layout = QVBoxLayout()
+        content_layout.setContentsMargins(20, 20, 20, 20)
+        content_layout.setSpacing(4)
+        content_widget.setLayout(content_layout)
+        
+        title = QLabel("Set Time")
+        title.setObjectName("timePickerDialogTitle")
+        content_layout.addWidget(title)
+        
+        subtitle = QLabel("Select hours and minutes")
+        subtitle.setObjectName("timePickerDialogSubtitle")
+        content_layout.addWidget(subtitle)
+        
+        main_layout.addWidget(content_widget)
+        
+        # Linha verde decorativa no final do header
+        green_line = QWidget()
+        green_line.setFixedHeight(2)
+        green_line.setStyleSheet("background-color: #6BFF50;")
+        main_layout.addWidget(green_line)
+        
+        return header
+    
+    def create_content(self) -> QWidget:
+        """Cria o conteúdo principal do diálogo"""
+        content = QWidget()
+        content.setObjectName("timePickerDialogContent")
+        
+        content_layout = QVBoxLayout()
+        content_layout.setContentsMargins(60, 20, 60, 40)
+        content_layout.setSpacing(16)
+        content.setLayout(content_layout)
         
         # Parse initial time
         hour, minute = 0, 0
@@ -141,83 +154,93 @@ class TimePickerDialog(QDialog):
         time_row = QHBoxLayout()
         time_row.setSpacing(4)
         
-        # Hour spinbox
-        hour_container = QVBoxLayout()
-        hour_container.setSpacing(8)
-        hour_label = QLabel("Hour")
-        hour_label.setObjectName("timePickerLabel")
-        hour_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        hour_container.addWidget(hour_label)
+        # ========== SPINBOX DE HORAS ==========
+        hour_container = QVBoxLayout()  # Cria container vertical para agrupar label + spinbox de horas
+        hour_container.setSpacing(8)  # Define espaçamento de 8px entre label e spinbox
+        hour_label = QLabel("Hour")  # Cria label com texto "Hour"
+        hour_label.setObjectName("timePickerLabel")  # Define ID do objeto para aplicar CSS personalizado
+        hour_label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Centraliza o texto do label
+        hour_container.addWidget(hour_label)  # Adiciona o label ao container
         
-        self.hour_spin = PaddedSpinBox()
-        self.hour_spin.setObjectName("timePickerSpinBox")
-        self.hour_spin.setRange(0, 23)
-        self.hour_spin.setValue(hour)
-        self.hour_spin.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.hour_spin.setMinimumHeight(65)
-        self.hour_spin.setMinimumWidth(120)
-        self.hour_spin.lineEdit().setReadOnly(False)
-        hour_spin_font = self.hour_spin.font()
-        hour_spin_font.setPointSize(22)
-        hour_spin_font.setBold(True)
-        self.hour_spin.setFont(hour_spin_font)
-        hour_container.addWidget(self.hour_spin)
+        self.hour_spin = PaddedSpinBox()  # Cria spinbox customizado com padding (formatação 00-99)
+        self.hour_spin.setObjectName("timePickerSpinBox")  # Define ID do objeto para aplicar CSS personalizado
+        self.hour_spin.setRange(0, 23)  # Define range de 0 a 23 horas (formato 24h)
+        self.hour_spin.setValue(hour)  # Define valor inicial da hora
+        self.hour_spin.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Centraliza o texto dentro do spinbox
+        self.hour_spin.setMinimumHeight(65)  # Define altura mínima de 65px para o spinbox
+        self.hour_spin.setMinimumWidth(120)  # Define largura mínima de 120px para o spinbox
+        self.hour_spin.lineEdit().setReadOnly(False)  # Permite edição direta digitando no campo
+        hour_spin_font = self.hour_spin.font()  # Obtém a fonte atual do spinbox
+        hour_spin_font.setPointSize(22)  # Define tamanho da fonte como 22pt
+        hour_spin_font.setBold(True)  # Define fonte como negrito
+        self.hour_spin.setFont(hour_spin_font)  # Aplica a fonte configurada ao spinbox
+        hour_container.addWidget(self.hour_spin)  # Adiciona o spinbox ao container
         
-        time_row.addLayout(hour_container)
+        time_row.addLayout(hour_container)  # Adiciona o container de horas à linha horizontal principal
         
-        # Separator ":" - container para centralizar verticalmente
-        separator_container = QVBoxLayout()
-        separator_container.addSpacing(36)  # Espaço para alinhar com os spinboxes
+        # ========== SEPARADOR ":" ==========
+        separator_container = QVBoxLayout()  # Cria container vertical para centralizar o separador
+        separator_container.addSpacing(75)  # Adiciona espaço de 36px no topo para alinhar com os spinboxes
         
-        separator = QLabel(":")
-        separator.setObjectName("timePickerSeparator")
-        separator.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        sep_font = separator.font()
-        sep_font.setPointSize(26)
-        sep_font.setBold(True)
-        separator.setFont(sep_font)
-        separator_container.addWidget(separator)
-        separator_container.addStretch()
+        separator = QLabel(":")  # Cria label com dois pontos como separador visual
+        separator.setObjectName("timePickerSeparator")  # Define ID do objeto para aplicar CSS personalizado
+        separator.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Centraliza o texto do separador
+        sep_font = separator.font()  # Obtém a fonte atual do separador
+        sep_font.setPointSize(26)  # Define tamanho da fonte como 26pt (maior que os spinboxes)
+        sep_font.setBold(True)  # Define fonte como negrito
+        separator.setFont(sep_font)  # Aplica a fonte configurada ao separador
+        separator_container.addWidget(separator)  # Adiciona o separador ao container
+        separator_container.addStretch()  # Adiciona espaço flexível abaixo do separador
         
-        time_row.addLayout(separator_container)
+        time_row.addLayout(separator_container)  # Adiciona o container do separador à linha horizontal principal
         
-        # Minute spinbox
-        minute_container = QVBoxLayout()
-        minute_container.setSpacing(8)
-        minute_label = QLabel("Minute")
-        minute_label.setObjectName("timePickerLabel")
-        minute_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        minute_container.addWidget(minute_label)
+        # ========== SPINBOX DE MINUTOS ==========
+        minute_container = QVBoxLayout()  # Cria container vertical para agrupar label + spinbox de minutos
+        minute_container.setSpacing(8)  # Define espaçamento de 8px entre label e spinbox
+        minute_label = QLabel("Minute")  # Cria label com texto "Minute"
+        minute_label.setObjectName("timePickerLabel")  # Define ID do objeto para aplicar CSS personalizado
+        minute_label.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Centraliza o texto do label
+        minute_container.addWidget(minute_label)  # Adiciona o label ao container
         
-        self.minute_spin = PaddedSpinBox()
-        self.minute_spin.setObjectName("timePickerSpinBox")
-        self.minute_spin.setRange(0, 59)
-        self.minute_spin.setValue(minute)
-        self.minute_spin.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.minute_spin.setMinimumHeight(65)
-        self.minute_spin.setMinimumWidth(120)
-        self.minute_spin.lineEdit().setReadOnly(False)
-        minute_spin_font = self.minute_spin.font()
-        minute_spin_font.setPointSize(22)
-        minute_spin_font.setBold(True)
-        self.minute_spin.setFont(minute_spin_font)
-        minute_container.addWidget(self.minute_spin)
+        self.minute_spin = PaddedSpinBox()  # Cria spinbox customizado com padding (formatação 00-99)
+        self.minute_spin.setObjectName("timePickerSpinBox")  # Define ID do objeto para aplicar CSS personalizado
+        self.minute_spin.setRange(0, 59)  # Define range de 0 a 59 minutos
+        self.minute_spin.setValue(minute)  # Define valor inicial dos minutos
+        self.minute_spin.setAlignment(Qt.AlignmentFlag.AlignCenter)  # Centraliza o texto dentro do spinbox
+        self.minute_spin.setMinimumHeight(65)  # Define altura mínima de 65px para o spinbox
+        self.minute_spin.setMinimumWidth(120)  # Define largura mínima de 120px para o spinbox
+        self.minute_spin.lineEdit().setReadOnly(False)  # Permite edição direta digitando no campo
+        minute_spin_font = self.minute_spin.font()  # Obtém a fonte atual do spinbox
+        minute_spin_font.setPointSize(22)  # Define tamanho da fonte como 22pt
+        minute_spin_font.setBold(True)  # Define fonte como negrito
+        self.minute_spin.setFont(minute_spin_font)  # Aplica a fonte configurada ao spinbox
+        minute_container.addWidget(self.minute_spin)  # Adiciona o spinbox ao container
         
-        time_row.addLayout(minute_container)
+        time_row.addLayout(minute_container)  # Adiciona o container de minutos à linha horizontal principal
         
-        main_layout.addLayout(time_row)
+        content_layout.addLayout(time_row)  # Adiciona a linha completa (hora:separador:minuto) ao layout do conteúdo
         
-        # Espaçamento
-        main_layout.addSpacing(12)
+        # ========== ESPAÇAMENTO ==========
+        content_layout.addSpacing(12)  # Adiciona espaço de 12px entre os spinboxes e o botão "Set Current Time"
         
         # Quick action - Now button
         now_btn = QPushButton("🕐 Set Current Time")
         now_btn.setObjectName("timePickerNowButton")
         now_btn.setMinimumHeight(40)
         now_btn.clicked.connect(self.set_current_time)
-        main_layout.addWidget(now_btn)
+        content_layout.addWidget(now_btn)
         
-        main_layout.addSpacing(8)
+        return content
+    
+    def create_footer(self) -> QWidget:
+        """Cria o rodapé com botões de ação"""
+        footer = QWidget()
+        footer.setObjectName("timePickerDialogFooter")
+        
+        footer_layout = QVBoxLayout()
+        footer_layout.setContentsMargins(24, 16, 24, 16)
+        footer_layout.setSpacing(0)
+        footer.setLayout(footer_layout)
         
         # Action buttons
         button_layout = QHBoxLayout()
@@ -242,7 +265,9 @@ class TimePickerDialog(QDialog):
         ok_btn.clicked.connect(self.accept_time)
         button_layout.addWidget(ok_btn)
         
-        main_layout.addLayout(button_layout)
+        footer_layout.addLayout(button_layout)
+        
+        return footer
     
     def set_current_time(self):
         """Define o horário atual"""
@@ -466,24 +491,48 @@ class DateEditDialog(QDialog):
     def init_ui(self):
         """Inicializa a interface do dialog"""
         self.setModal(True)
-        self.setFixedSize(420, 480)
+        self.setFixedSize(450, 560)
         
-        # Container principal
+        # Layout principal sem margens
         main_layout = QVBoxLayout()
-        main_layout.setContentsMargins(28, 24, 28, 24)
-        main_layout.setSpacing(20)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
         self.setLayout(main_layout)
         
         # Header
-        header_layout = QVBoxLayout()
-        header_layout.setSpacing(8)
+        header = self.create_header()
+        main_layout.addWidget(header)
         
-        self.title = QLabel("📅 Select Date")
-        self.title.setObjectName("calendarDialogTitle")
-        self.title.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        header_layout.addWidget(self.title)
+        # Content
+        content = self.create_content()
+        main_layout.addWidget(content, 1)
         
-        # Selected date display
+        # Footer
+        footer = self.create_footer()
+        main_layout.addWidget(footer)
+    
+    def create_header(self) -> QWidget:
+        """Cria o cabeçalho do diálogo"""
+        # Container principal sem margens para linha ocupar toda largura
+        header = QWidget()
+        header.setObjectName("datePickerDialogHeader")
+        
+        main_header_layout = QVBoxLayout()
+        main_header_layout.setContentsMargins(0, 0, 0, 0)
+        main_header_layout.setSpacing(0)
+        header.setLayout(main_header_layout)
+        
+        # Widget de conteúdo com margens
+        content_widget = QWidget()
+        content_layout = QVBoxLayout()
+        content_layout.setContentsMargins(24, 20, 24, 20)
+        content_layout.setSpacing(4)
+        content_widget.setLayout(content_layout)
+        
+        title = QLabel("Select Date")
+        title.setObjectName("datePickerDialogTitle")
+        content_layout.addWidget(title)
+        
         from PyQt6.QtCore import QDate
         selected_qdate = QDate.currentDate()
         
@@ -498,17 +547,42 @@ class DateEditDialog(QDialog):
                 pass
         
         self.date_display = QLabel(selected_qdate.toString("dddd, MMMM d, yyyy"))
-        self.date_display.setObjectName("calendarDateDisplay")
-        self.date_display.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        header_layout.addWidget(self.date_display)
+        self.date_display.setObjectName("datePickerDialogSubtitle")
+        content_layout.addWidget(self.date_display)
         
-        main_layout.addLayout(header_layout)
+        main_header_layout.addWidget(content_widget)
         
-        # Divider
-        divider = QLabel()
-        divider.setObjectName("calendarDivider")
-        divider.setFixedHeight(1)
-        main_layout.addWidget(divider)
+        # Linha verde decorativa no final do header
+        green_line = QWidget()
+        green_line.setFixedHeight(2)
+        green_line.setStyleSheet("background-color: #6BFF50;")
+        main_header_layout.addWidget(green_line)
+        
+        return header
+    
+    def create_content(self) -> QWidget:
+        """Cria o conteúdo principal do diálogo"""
+        content = QWidget()
+        content.setObjectName("datePickerDialogContent")
+        
+        content_layout = QVBoxLayout()
+        content_layout.setContentsMargins(24, 24, 24, 24)
+        content_layout.setSpacing(16)
+        content.setLayout(content_layout)
+        
+        # Parse initial date
+        from PyQt6.QtCore import QDate
+        selected_qdate = QDate.currentDate()
+        
+        if self.selected_date:
+            try:
+                parts = self.selected_date.split('/')
+                if len(parts) == 3:
+                    day, month, year = int(parts[0]), int(parts[1]), int(parts[2])
+                    full_year = 2000 + year if year < 100 else year
+                    selected_qdate = QDate(full_year, month, day)
+            except:
+                pass
         
         # Calendar Widget
         self.calendar = QCalendarWidget()
@@ -520,11 +594,25 @@ class DateEditDialog(QDialog):
         self.calendar.setMinimumHeight(280)
         self.calendar.setMaximumHeight(320)
         
+        # Configura ícones SVG personalizados para os botões de navegação
+        self.setup_calendar_navigation_icons()
+        
         # Update date display when selection changes
         self.calendar.selectionChanged.connect(self.update_date_display)
         
-        main_layout.addWidget(self.calendar)
-        main_layout.addSpacing(8)
+        content_layout.addWidget(self.calendar)
+        
+        return content
+    
+    def create_footer(self) -> QWidget:
+        """Cria o rodapé com botões de ação"""
+        footer = QWidget()
+        footer.setObjectName("datePickerDialogFooter")
+        
+        footer_layout = QVBoxLayout()
+        footer_layout.setContentsMargins(24, 16, 24, 16)
+        footer_layout.setSpacing(0)
+        footer.setLayout(footer_layout)
         
         # Action buttons
         button_row = QHBoxLayout()
@@ -533,21 +621,58 @@ class DateEditDialog(QDialog):
         button_row.addStretch()
         
         cancel_btn = QPushButton("Cancel")
-        cancel_btn.setObjectName("calendarCancelButton")
+        cancel_btn.setObjectName("datePickerCancelButton")
         cancel_btn.setMinimumWidth(100)
         cancel_btn.setMinimumHeight(42)
         cancel_btn.clicked.connect(self.reject)
         button_row.addWidget(cancel_btn)
         
         ok_btn = QPushButton("Select")
-        ok_btn.setObjectName("calendarOkButton")
+        ok_btn.setObjectName("datePickerOkButton")
         ok_btn.setMinimumWidth(100)
         ok_btn.setMinimumHeight(42)
         ok_btn.setDefault(True)
         ok_btn.clicked.connect(self.accept)
         button_row.addWidget(ok_btn)
         
-        main_layout.addLayout(button_row)
+        footer_layout.addLayout(button_row)
+        
+        return footer
+    
+    def setup_calendar_navigation_icons(self):
+        """Configura ícones SVG personalizados para os botões de navegação do calendário"""
+        # Determina qual tema está ativo verificando o stylesheet
+        stylesheet = self.styleSheet()
+        is_dark_theme = "background-color: #0d1117" in stylesheet or "background-color: #1a1a1a" in stylesheet
+        
+        # Define os arquivos SVG baseado no tema
+        if is_dark_theme:
+            prev_icon_file = "arrow-prev-dark.svg"
+            next_icon_file = "arrow-next-dark.svg"
+        else:
+            prev_icon_file = "arrow-prev-light.svg"
+            next_icon_file = "arrow-next-light.svg"
+        
+        # Cria os ícones
+        prev_icon = QIcon(get_icon_path(prev_icon_file))
+        next_icon = QIcon(get_icon_path(next_icon_file))
+        
+        # Encontra os botões de navegação no calendário
+        nav_bar = self.calendar.findChild(QWidget, "qt_calendar_navigationbar")
+        if nav_bar:
+            # Botão anterior (mês anterior)
+            prev_button = nav_bar.findChild(QToolButton, "qt_calendar_prevmonth")
+            if prev_button:
+                prev_button.setIcon(prev_icon)
+                prev_button.setIconSize(QSize(20, 20))
+                prev_button.setText("")  # Remove texto se houver
+            
+            # Botão próximo (próximo mês)
+            next_button = nav_bar.findChild(QToolButton, "qt_calendar_nextmonth")
+            if next_button:
+                next_button.setIcon(next_icon)
+                next_button.setIconSize(QSize(20, 20))
+                next_button.setText("")  # Remove texto se houver
     
     def update_date_display(self):
         """Atualiza o display da data selecionada"""
@@ -561,3 +686,10 @@ class DateEditDialog(QDialog):
         month = date.month()
         year = date.year() % 100
         return f"{day:02d}/{month:02d}/{year:02d}"
+    
+    def showEvent(self, event):
+        """Override showEvent para garantir que os ícones sejam aplicados"""
+        super().showEvent(event)
+        # Aplica os ícones novamente quando o diálogo é mostrado
+        # (garante que funcione mesmo se os widgets internos forem criados tardiamente)
+        self.setup_calendar_navigation_icons()

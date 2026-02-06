@@ -2,13 +2,14 @@
 Main Window - View
 """
 import os
+import sys
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QTableWidget, QHeaderView,
     QCheckBox, QAbstractItemView, QApplication, QLabel
 )
-from PyQt6.QtCore import Qt, QByteArray, QSize
-from PyQt6.QtGui import QIcon, QPixmap, QPainter
+from PyQt6.QtCore import Qt, QByteArray, QSize, pyqtSignal
+from PyQt6.QtGui import QIcon, QPixmap, QPainter, QCursor
 from PyQt6.QtSvgWidgets import QSvgWidget
 from PyQt6.QtSvg import QSvgRenderer
 from .widgets import CardNameWidget
@@ -18,7 +19,12 @@ from .styles import get_light_stylesheet, get_dark_stylesheet
 
 def get_icon_path(filename: str) -> str:
     """Retorna o caminho completo para um arquivo de ícone"""
-    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    if getattr(sys, 'frozen', False):
+        # Rodando como executável PyInstaller
+        base_dir = sys._MEIPASS
+    else:
+        # Rodando como script Python normal
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     return os.path.join(base_dir, 'icon', filename)
 
 
@@ -48,6 +54,64 @@ def create_colored_icon(svg_filename: str, color: str = "#000023", size: int = 2
     except Exception as e:
         print(f"Erro ao carregar ícone {svg_filename}: {e}")
         return QIcon()
+
+
+class CustomCheckBox(QLabel):
+    """Checkbox customizado usando ícones SVG"""
+    
+    stateChanged = pyqtSignal(int)  # Sinal compatível com QCheckBox
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._checked = False
+        self.setFixedSize(24, 24)
+        self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.update_icon()
+    
+    def update_icon(self):
+        """Atualiza o ícone baseado no estado checked/unchecked"""
+        if self._checked:
+            icon_path = get_icon_path("checkbox-check-svgrepo-com.svg")
+        else:
+            icon_path = get_icon_path("checkbox-unchecked-svgrepo-com.svg")
+        
+        try:
+            pixmap = QPixmap(icon_path)
+            scaled_pixmap = pixmap.scaled(26, 26, Qt.AspectRatioMode.KeepAspectRatio, 
+                                         Qt.TransformationMode.SmoothTransformation)
+            self.setPixmap(scaled_pixmap)
+        except Exception as e:
+            print(f"Erro ao carregar ícone do checkbox: {e}")
+    
+    def mousePressEvent(self, event):
+        """Handler para clique no checkbox"""
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.setChecked(not self._checked)
+        super().mousePressEvent(event)
+    
+    def setChecked(self, checked: bool):
+        """Define o estado do checkbox"""
+        if self._checked != checked:
+            self._checked = checked
+            self.update_icon()
+            # Emite sinal compatível com QCheckBox
+            self.stateChanged.emit(Qt.CheckState.Checked.value if checked else Qt.CheckState.Unchecked.value)
+    
+    def isChecked(self) -> bool:
+        """Retorna o estado do checkbox"""
+        return self._checked
+    
+    def setFocusPolicy(self, policy):
+        """Compatibilidade com QCheckBox"""
+        super().setFocusPolicy(policy)
+    
+    def setObjectName(self, name: str):
+        """Compatibilidade com QCheckBox"""
+        super().setObjectName(name)
+    
+    def setToolTip(self, tooltip: str):
+        """Compatibilidade com QCheckBox"""
+        super().setToolTip(tooltip)
 
 
 class MainWindow(QMainWindow):
@@ -115,6 +179,20 @@ class MainWindow(QMainWindow):
         self.table.setColumnWidth(3, 180)
         self.table.setColumnWidth(4, 140)
         self.table.setColumnWidth(5, 50)
+        
+        # Cria checkbox "Select All" no header da primeira coluna
+        self.select_all_cb = CustomCheckBox()
+        self.select_all_cb.setObjectName("selectAllCheckbox")
+        self.select_all_cb.setToolTip("Select all tasks")
+        self.select_all_cb.setFixedSize(24, 24)  # Define tamanho fixo do checkbox
+        self.select_all_cb.setParent(header.viewport())
+        self.select_all_cb.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, False)
+        
+        # Posiciona o checkbox no centro da primeira coluna do header
+        self.update_select_all_position()
+        
+        # Conecta evento de resize para reposicionar o checkbox
+        header.sectionResized.connect(lambda: self.update_select_all_position())
         
         content_layout.addWidget(self.table, 1)
         
@@ -211,10 +289,6 @@ class MainWindow(QMainWindow):
         action_layout.setSpacing(12)
         
         # Left side - bulk actions
-        self.select_all_cb = QCheckBox("Select all")
-        self.select_all_cb.setObjectName("selectAllCheckbox")
-        action_layout.addWidget(self.select_all_cb)
-        
         self.delete_btn = QPushButton("Delete")
         self.delete_btn.setObjectName("deleteButton")
         action_layout.addWidget(self.delete_btn)
@@ -227,6 +301,18 @@ class MainWindow(QMainWindow):
         action_layout.addWidget(self.add_btn)
         
         return action_layout
+    
+    def update_select_all_position(self):
+        """Atualiza a posição do checkbox select_all no header"""
+        if hasattr(self, 'select_all_cb') and hasattr(self, 'table'):
+            header = self.table.horizontalHeader()
+            # Calcula posição central da primeira coluna usando tamanho fixo do checkbox
+            checkbox_size = 24
+            x = header.sectionViewportPosition(0) + (header.sectionSize(0) - checkbox_size) // 2
+            y = (header.height() - checkbox_size) // 2
+            self.select_all_cb.move(x, y)
+            self.select_all_cb.raise_()  # Garante que o checkbox fique no topo
+            self.select_all_cb.show()
     
     def set_dark_mode(self, enabled: bool):
         """Define o modo escuro"""
@@ -260,6 +346,12 @@ class MainWindow(QMainWindow):
         else:
             self.setStyleSheet(get_light_stylesheet())
     
+    def showEvent(self, event):
+        """Evento chamado quando a janela é exibida"""
+        super().showEvent(event)
+        # Garante que o checkbox select_all seja posicionado corretamente
+        self.update_select_all_position()
+    
     def clear_all_focus(self):
         """Remove o foco de todos os widgets"""
         focused_widget = QApplication.focusWidget()
@@ -273,7 +365,7 @@ class MainWindow(QMainWindow):
         
         for row, card in enumerate(cards):
             # Selection checkbox
-            checkbox = QCheckBox()
+            checkbox = CustomCheckBox()
             checkbox.setChecked(card.is_selected)
             checkbox.setFocusPolicy(Qt.FocusPolicy.NoFocus)
             checkbox.stateChanged.connect(lambda state, c=card: on_checkbox_changed(c, state))
@@ -335,47 +427,6 @@ class MainWindow(QMainWindow):
         
         return widget
     
-    def create_time_range_widget(self, card) -> QWidget:
-        """Cria widget para exibir intervalo de tempo"""
-        widget = QWidget()
-        layout = QVBoxLayout()
-        layout.setContentsMargins(8, 4, 8, 4)
-        layout.setSpacing(2)
-        layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
-        widget.setLayout(layout)
-        
-        if card.start_time:
-            start_label = QLabel(f"Started: {card.start_time}")
-            start_label.setObjectName("timeRangeLabel")
-            layout.addWidget(start_label)
-        
-        if card.end_time and not card.is_running:
-            end_label = QLabel(f"Ended: {card.end_time}")
-            end_label.setObjectName("timeRangeLabel")
-            layout.addWidget(end_label)
-        elif card.is_running:
-            # Ícone de alarme + texto "In Progress"
-            running_container = QWidget()
-            running_layout = QHBoxLayout()
-            running_layout.setContentsMargins(0, 0, 0, 0)
-            running_layout.setSpacing(2)
-            running_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            running_container.setLayout(running_layout)
-            
-            # Ícone de alarme
-            running_icon = QLabel()
-            alarm_icon = create_colored_icon("alarm-svgrepo-com.svg", "#28a745", 14)
-            running_icon.setPixmap(alarm_icon.pixmap(QSize(14, 14)))
-            running_layout.addWidget(running_icon)
-            
-            # Texto "In Progress..."
-            running_text = QLabel("Em Progresso...")
-            running_text.setObjectName("runningLabel")
-            running_layout.addWidget(running_text)
-            
-            layout.addWidget(running_container)
-        
-        return widget
     def create_controls_widget(self, card, on_play_clicked, on_pause_clicked) -> QWidget:
         """Cria widget com botões de controle"""
         widget = QWidget()
