@@ -320,7 +320,7 @@ class TimeRangeWidget(QWidget):
         
         # End time or running indicator
         if self.card.is_running:
-            running_label = QLabel("⏱️ In Progress...")
+            running_label = QLabel("◷ In Progress...")
             running_label.setObjectName("runningLabel")
             layout.addWidget(running_label)
         else:

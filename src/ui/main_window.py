@@ -1,15 +1,53 @@
 """
 Main Window - View
 """
+import os
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QTableWidget, QHeaderView,
     QCheckBox, QAbstractItemView, QApplication, QLabel
 )
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QByteArray, QSize
+from PyQt6.QtGui import QIcon, QPixmap, QPainter
+from PyQt6.QtSvgWidgets import QSvgWidget
+from PyQt6.QtSvg import QSvgRenderer
 from .widgets import CardNameWidget
 from .time_widgets import TimeRangeWidget
 from .styles import get_light_stylesheet, get_dark_stylesheet
+
+
+def get_icon_path(filename: str) -> str:
+    """Retorna o caminho completo para um arquivo de ícone"""
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    return os.path.join(base_dir, 'icon', filename)
+
+
+def create_colored_icon(svg_filename: str, color: str = "#000023", size: int = 24) -> QIcon:
+    """Cria um QIcon a partir de um arquivo SVG com cor customizada"""
+    svg_path = get_icon_path(svg_filename)
+    
+    try:
+        with open(svg_path, 'r') as f:
+            svg_content = f.read()
+        
+        # Substitui a cor do fill no SVG
+        svg_content = svg_content.replace('fill="#1C274C"', f'fill="{color}"')
+        
+        # Cria um QPixmap a partir do SVG modificado
+        svg_bytes = QByteArray(svg_content.encode())
+        renderer = QSvgRenderer(svg_bytes)
+        
+        pixmap = QPixmap(size, size)
+        pixmap.fill(Qt.GlobalColor.transparent)
+        
+        painter = QPainter(pixmap)
+        renderer.render(painter)
+        painter.end()
+        
+        return QIcon(pixmap)
+    except Exception as e:
+        print(f"Erro ao carregar ícone {svg_filename}: {e}")
+        return QIcon()
 
 
 class MainWindow(QMainWindow):
@@ -25,19 +63,19 @@ class MainWindow(QMainWindow):
         """Inicializa a interface do usuário"""
         self.setWindowTitle("Time Tracker")
         self.setMinimumSize(900, 600)
-        self.resize(1100, 700)
+        self.resize(1100, 750)
         
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         
         main_layout = QVBoxLayout()
-        main_layout.setContentsMargins(24, 24, 24, 24)
+        main_layout.setContentsMargins(20, 20, 20, 20)
         main_layout.setSpacing(20)
         central_widget.setLayout(main_layout)
         
         # Header section
-        header_layout = self.create_header()
-        main_layout.addLayout(header_layout)
+        header_widget = self.create_header()
+        main_layout.addWidget(header_widget)
         
         # Cards table
         self.table = QTableWidget()
@@ -78,8 +116,19 @@ class MainWindow(QMainWindow):
         
         self.apply_theme()
     
-    def create_header(self) -> QHBoxLayout:
+    def create_header(self) -> QWidget:
         """Cria o cabeçalho da aplicação"""
+        # Container principal do header
+        header_container = QWidget()
+        header_container.setObjectName("mainWindowHeader")
+        
+        container_layout = QVBoxLayout()
+        container_layout.setContentsMargins(20, 16, 20, 16)
+        container_layout.setSpacing(0)
+        header_container.setLayout(container_layout)
+
+        
+        # Layout horizontal com conteúdo do header
         header_layout = QHBoxLayout()
         header_layout.setSpacing(16)
         
@@ -87,7 +136,7 @@ class MainWindow(QMainWindow):
         title_container = QVBoxLayout()
         title_container.setSpacing(4)
         
-        title_label = QLabel("⏱️ Time Tracker")
+        title_label = QLabel("TIME TRACKER")
         title_label.setObjectName("titleLabel")
         title_container.addWidget(title_label)
         
@@ -99,27 +148,38 @@ class MainWindow(QMainWindow):
         header_layout.addStretch()
         
         # Notes button
-        self.notes_btn = QPushButton("📝")
+        self.notes_btn = QPushButton()
         self.notes_btn.setObjectName("notesButton")
         self.notes_btn.setFixedSize(40, 40)
         self.notes_btn.setToolTip("Open notes")
+        notes_icon = create_colored_icon("document-add-svgrepo-com.svg", "#000023", 24)
+        self.notes_btn.setIcon(notes_icon)
+        self.notes_btn.setIconSize(QSize(24, 24))
         header_layout.addWidget(self.notes_btn)
         
         # Settings button
-        self.settings_btn = QPushButton("⚙️")
+        self.settings_btn = QPushButton()
         self.settings_btn.setObjectName("settingsButton")
         self.settings_btn.setFixedSize(40, 40)
         self.settings_btn.setToolTip("Open settings")
+        settings_icon = create_colored_icon("settings-svgrepo-com.svg", "#000023", 24)
+        self.settings_btn.setIcon(settings_icon)
+        self.settings_btn.setIconSize(QSize(24, 24))
         header_layout.addWidget(self.settings_btn)
         
         # Theme toggle
-        self.theme_btn = QPushButton("🌙")
+        self.theme_btn = QPushButton()
         self.theme_btn.setObjectName("themeToggle")
         self.theme_btn.setFixedSize(40, 40)
         self.theme_btn.setToolTip("Toggle dark mode")
+        moon_icon = create_colored_icon("moon-stars-svgrepo-com.svg", "#000023", 24)
+        self.theme_btn.setIcon(moon_icon)
+        self.theme_btn.setIconSize(QSize(24, 24))
         header_layout.addWidget(self.theme_btn)
         
-        return header_layout
+        container_layout.addLayout(header_layout)
+        
+        return header_container
     
     def create_action_bar(self) -> QHBoxLayout:
         """Cria a barra de ações"""
@@ -147,9 +207,27 @@ class MainWindow(QMainWindow):
     def set_dark_mode(self, enabled: bool):
         """Define o modo escuro"""
         self.dark_mode = enabled
-        self.theme_btn.setText("☀️" if self.dark_mode else "🌙")
+        # No dark mode, mostra o sol (para voltar ao light mode)
+        # No light mode, mostra a lua (para ir ao dark mode)
+        if self.dark_mode:
+            sun_icon = create_colored_icon("sun-svgrepo-com.svg", "#7d8590", 24)
+            self.theme_btn.setIcon(sun_icon)
+        else:
+            moon_icon = create_colored_icon("moon-stars-svgrepo-com.svg", "#495057", 24)
+            self.theme_btn.setIcon(moon_icon)
         self.theme_btn.setToolTip("Switch to light mode" if self.dark_mode else "Switch to dark mode")
         self.apply_theme()
+        
+        # Atualiza os outros ícones conforme o tema
+        if self.dark_mode:
+            notes_icon = create_colored_icon("document-add-svgrepo-com.svg", "#7d8590", 24)
+            settings_icon = create_colored_icon("settings-svgrepo-com.svg", "#7d8590", 24)
+        else:
+            notes_icon = create_colored_icon("document-add-svgrepo-com.svg", "#495057", 24)
+            settings_icon = create_colored_icon("settings-svgrepo-com.svg", "#495057", 24)
+        
+        self.notes_btn.setIcon(notes_icon)
+        self.settings_btn.setIcon(settings_icon)
     
     def apply_theme(self):
         """Aplica o tema atual"""
@@ -252,7 +330,7 @@ class MainWindow(QMainWindow):
             end_label.setObjectName("timeRangeLabel")
             layout.addWidget(end_label)
         elif card.is_running:
-            running_label = QLabel("⏱️ In Progress...")
+            running_label = QLabel("◷ In Progress...")
             running_label.setObjectName("runningLabel")
             layout.addWidget(running_label)
         
@@ -267,26 +345,31 @@ class MainWindow(QMainWindow):
         widget.setLayout(layout)
         
         # Play button
-        play_btn = QPushButton("▶")
+        play_btn = QPushButton()
         play_btn.setObjectName("playButton")
         play_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         play_btn.setEnabled(not card.is_running)
         play_btn.setFixedSize(40, 40)
         play_btn.setToolTip("Start timer")
+        play_icon = create_colored_icon("play-svgrepo-com.svg", "#ffffff", 20)
+        play_btn.setIcon(play_icon)
+        play_btn.setIconSize(QSize(20, 20))
         play_btn.clicked.connect(lambda: on_play_clicked(card))
         layout.addWidget(play_btn)
         
         # Pause button
-        pause_btn = QPushButton("⏸")
+        pause_btn = QPushButton()
         pause_btn.setObjectName("pauseButton")
         pause_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         pause_btn.setEnabled(card.is_running)
         pause_btn.setFixedSize(40, 40)
         pause_btn.setToolTip("Pause timer")
+        pause_icon = create_colored_icon("pause-svgrepo-com (1).svg", "#000023", 20)
+        pause_btn.setIcon(pause_icon)
+        pause_btn.setIconSize(QSize(20, 20))
         pause_btn.clicked.connect(lambda: on_pause_clicked(card))
         layout.addWidget(pause_btn)
         
-        return widget
         return widget
     
     def create_status_indicator(self, card) -> QWidget:

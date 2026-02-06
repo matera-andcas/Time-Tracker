@@ -1,13 +1,49 @@
 """
 Notes Dialog - Notepad for tags and descriptions
 """
+import os
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, 
     QPushButton, QWidget, QTableWidget, QHeaderView,
     QLineEdit, QAbstractItemView, QMessageBox
 )
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QGuiApplication
+from PyQt6.QtCore import Qt, QByteArray, QSize
+from PyQt6.QtGui import QGuiApplication, QIcon, QPixmap, QPainter
+from PyQt6.QtSvg import QSvgRenderer
+
+
+def get_icon_path(filename: str) -> str:
+    """Retorna o caminho completo para um arquivo de ícone"""
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    return os.path.join(base_dir, 'icon', filename)
+
+
+def create_colored_icon(svg_filename: str, color: str = "#000023", size: int = 24) -> QIcon:
+    """Cria um QIcon a partir de um arquivo SVG com cor customizada"""
+    svg_path = get_icon_path(svg_filename)
+    
+    try:
+        with open(svg_path, 'r') as f:
+            svg_content = f.read()
+        
+        # Substitui a cor do fill no SVG
+        svg_content = svg_content.replace('fill="#1C274C"', f'fill="{color}"')
+        
+        # Cria um QPixmap a partir do SVG modificado
+        svg_bytes = QByteArray(svg_content.encode())
+        renderer = QSvgRenderer(svg_bytes)
+        
+        pixmap = QPixmap(size, size)
+        pixmap.fill(Qt.GlobalColor.transparent)
+        
+        painter = QPainter(pixmap)
+        renderer.render(painter)
+        painter.end()
+        
+        return QIcon(pixmap)
+    except Exception as e:
+        print(f"Erro ao carregar ícone {svg_filename}: {e}")
+        return QIcon()
 
 
 class NotesDialog(QDialog):
@@ -27,7 +63,7 @@ class NotesDialog(QDialog):
     def init_ui(self):
         """Inicializa a interface do diálogo"""
         self.setWindowTitle("Notes")
-        self.setMinimumSize(700, 500)
+        self.setMinimumSize(730, 500)
         self.setObjectName("notesDialog")
         
         # Layout principal
@@ -58,7 +94,7 @@ class NotesDialog(QDialog):
         layout.setSpacing(4)
         header.setLayout(layout)
         
-        title = QLabel("📝 Notes")
+        title = QLabel("Notes")
         title.setObjectName("notesDialogTitle")
         layout.addWidget(title)
         
@@ -74,36 +110,20 @@ class NotesDialog(QDialog):
         content.setObjectName("notesDialogContent")
         
         layout = QVBoxLayout()
-        layout.setContentsMargins(24, 20, 24, 20)
-        layout.setSpacing(16)
+        layout.setSpacing(10)
         content.setLayout(layout)
-        
-        # Action bar (botão Add)
-        action_bar = QHBoxLayout()
-        action_bar.setSpacing(12)
-        
-        action_bar.addStretch()
-        
-        add_btn = QPushButton("+ Add Note")
-        add_btn.setObjectName("notesAddButton")
-        add_btn.clicked.connect(self.on_add_note)
-        action_bar.addWidget(add_btn)
-        
-        layout.addLayout(action_bar)
         
         # Table
         self.table = QTableWidget()
         self.table.setColumnCount(4)
-        self.table.setHorizontalHeaderLabels([
-            "", "Tag", "Description", ""
-        ])
+        self.table.setHorizontalHeaderLabels(["", "Tag", "Description", ""])
         
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.table.verticalHeader().setVisible(False)
         self.table.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.table.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
-        self.table.verticalHeader().setDefaultSectionSize(64)
+        self.table.verticalHeader().setDefaultSectionSize(74)
         self.table.setShowGrid(False)
         self.table.setObjectName("notesTable")
         
@@ -116,6 +136,7 @@ class NotesDialog(QDialog):
         
         self.table.setColumnWidth(0, 60)
         self.table.setColumnWidth(1, 150)
+        self.table.setColumnWidth(2, 200)
         self.table.setColumnWidth(3, 60)
         
         layout.addWidget(self.table)
@@ -128,9 +149,15 @@ class NotesDialog(QDialog):
         footer.setObjectName("notesDialogFooter")
         
         layout = QHBoxLayout()
-        layout.setContentsMargins(24, 16, 24, 16)
+        layout.setContentsMargins(20, 16, 20, 16)
         layout.setSpacing(12)
         footer.setLayout(layout)
+        
+        # Botão Add Note
+        add_btn = QPushButton("+ Add Note")
+        add_btn.setObjectName("notesAddButton")
+        add_btn.clicked.connect(self.on_add_note)
+        layout.addWidget(add_btn)
         
         layout.addStretch()
         
@@ -148,30 +175,33 @@ class NotesDialog(QDialog):
         
         for row, note in enumerate(self.notes):
             # Botão copiar
-            copy_btn = QPushButton("📋")
+            copy_btn = QPushButton()
             copy_btn.setObjectName("notesCopyButton")
             copy_btn.setFixedSize(40, 40)
             copy_btn.setToolTip("Copy tag")
+            copy_icon = create_colored_icon("copy-svgrepo-com.svg", 20)
+            copy_btn.setIcon(copy_icon)
+            copy_btn.setIconSize(QSize(20, 20))
             copy_btn.clicked.connect(lambda checked, t=note['tag']: self.on_copy_tag(t))
             
             copy_widget = QWidget()
             copy_layout = QHBoxLayout()
-            copy_layout.addWidget(copy_btn)
+            copy_layout.addWidget(copy_btn) 
             copy_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            copy_layout.setContentsMargins(0, 0, 0, 0)
+            copy_layout.setContentsMargins(0, 0, 16, 0)
             copy_widget.setLayout(copy_layout)
             self.table.setCellWidget(row, 0, copy_widget)
             
             # Campo Tag
             tag_field = QLineEdit(note['tag'])
             tag_field.setObjectName("notesTagField")
-            tag_field.setPlaceholderText("e.g., EMP-1333")
             tag_field.textChanged.connect(lambda text, r=row: self.on_tag_changed(r, text))
             
             tag_widget = QWidget()
             tag_layout = QHBoxLayout()
             tag_layout.addWidget(tag_field)
-            tag_layout.setContentsMargins(8, 4, 8, 4)
+            #tag_layout.setContentsMargins(0, 3, 0, 3)
+            tag_layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
             tag_widget.setLayout(tag_layout)
             self.table.setCellWidget(row, 1, tag_widget)
             
@@ -184,22 +214,26 @@ class NotesDialog(QDialog):
             desc_widget = QWidget()
             desc_layout = QHBoxLayout()
             desc_layout.addWidget(desc_field)
-            desc_layout.setContentsMargins(8, 4, 8, 4)
+            #desc_layout.setContentsMargins(6, 6, 6, 6)
+            desc_layout.setAlignment(Qt.AlignmentFlag.AlignVCenter)
             desc_widget.setLayout(desc_layout)
             self.table.setCellWidget(row, 2, desc_widget)
             
             # Botão deletar
-            del_btn = QPushButton("🗑️")
+            del_btn = QPushButton()
             del_btn.setObjectName("notesDeleteButton")
             del_btn.setFixedSize(40, 40)
             del_btn.setToolTip("Delete note")
+            del_icon = create_colored_icon("trash-bin-minimalistic-svgrepo-com.svg", "#dc3545", 20)
+            del_btn.setIcon(del_icon)
+            del_btn.setIconSize(QSize(20, 20))
             del_btn.clicked.connect(lambda checked, r=row: self.on_delete_note(r))
             
             del_widget = QWidget()
             del_layout = QHBoxLayout()
             del_layout.addWidget(del_btn)
             del_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            del_layout.setContentsMargins(0, 0, 0, 0)
+            del_layout.setContentsMargins(0, 0, 16, 0)
             del_widget.setLayout(del_layout)
             self.table.setCellWidget(row, 3, del_widget)
     
