@@ -123,7 +123,7 @@ def get_light_stylesheet() -> str:
         
         /* Buttons - Primary Action */
         QPushButton#addButton {
-            background-color: #007bff;
+            background-color: #000023;
             color: #ffffff;
             padding: 12px 24px;
             border-radius: 8px;
@@ -134,11 +134,11 @@ def get_light_stylesheet() -> str:
         }
         
         QPushButton#addButton:hover {
-            background-color: #0056b3;
+            background-color: #1a2847;
         }
         
         QPushButton#addButton:pressed {
-            background-color: #004085;
+            background-color: #00001a;
         }
         
         /* Buttons - Danger */
@@ -251,12 +251,12 @@ def get_light_stylesheet() -> str:
         }
         
         QCheckBox::indicator:hover {
-            border-color: #007bff;
+            border-color: #000023;
         }
         
         QCheckBox::indicator:checked {
-            background-color: #007bff;
-            border-color: #007bff;
+            background-color: #000023;
+            border-color: #000023;
             image: url(none);
         }
         
@@ -832,7 +832,7 @@ def get_light_stylesheet() -> str:
         
         QLabel#notesDialogSubtitle {
             font-size: 13px;
-            color: #6BFF50;
+            color: #ffffff;
             font-weight: 400;
         }
         
@@ -998,7 +998,7 @@ def get_light_stylesheet() -> str:
         
         QLabel#settingsDialogSubtitle {
             font-size: 13px;
-            color: #6BFF50;
+            color: #ffffff;
             font-weight: 400;
         }
         
@@ -1183,7 +1183,7 @@ def get_dark_stylesheet() -> str:
         
         /* Buttons - Primary Action */
         QPushButton#addButton {
-            background-color: #238636;
+            background-color: #000023;
             color: #ffffff;
             padding: 12px 24px;
             border-radius: 8px;
@@ -1194,11 +1194,11 @@ def get_dark_stylesheet() -> str:
         }
         
         QPushButton#addButton:hover {
-            background-color: #2ea043;
+            background-color: #1a2847;
         }
         
         QPushButton#addButton:pressed {
-            background-color: #196c2e;
+            background-color: #00001a;
         }
         
         /* Buttons - Danger */
@@ -1934,7 +1934,7 @@ def get_dark_stylesheet() -> str:
         
         QLabel#notesDialogSubtitle {
             font-size: 13px;
-            color: #6BFF50;
+            color: #ffffff;
             font-weight: 400;
         }
         
@@ -2101,7 +2101,7 @@ def get_dark_stylesheet() -> str:
         
         QLabel#settingsDialogSubtitle {
             font-size: 13px;
-            color: #6BFF50;
+            color: #ffffff;
             font-weight: 400;
         }
         

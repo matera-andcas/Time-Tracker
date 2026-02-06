@@ -1,13 +1,49 @@
 """
 Time Widgets - Interactive time display and picker components
 """
+import os
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
     QDialog, QSpinBox, QPushButton, QTimeEdit, QCalendarWidget
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QTime
-from PyQt6.QtGui import QCursor, QFont
+from PyQt6.QtCore import Qt, pyqtSignal, QTime, QByteArray, QSize
+from PyQt6.QtGui import QCursor, QFont, QIcon, QPixmap, QPainter
+from PyQt6.QtSvg import QSvgRenderer
 from datetime import datetime
+
+
+def get_icon_path(filename: str) -> str:
+    """Retorna o caminho completo para um arquivo de ícone"""
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    return os.path.join(base_dir, 'icon', filename)
+
+
+def create_colored_icon(svg_filename: str, color: str = "#000023", size: int = 24) -> QIcon:
+    """Cria um QIcon a partir de um arquivo SVG com cor customizada"""
+    svg_path = get_icon_path(svg_filename)
+    
+    try:
+        with open(svg_path, 'r') as f:
+            svg_content = f.read()
+        
+        # Substitui a cor do fill no SVG
+        svg_content = svg_content.replace('fill="#1C274C"', f'fill="{color}"')
+        
+        # Cria um QPixmap a partir do SVG modificado
+        svg_bytes = QByteArray(svg_content.encode())
+        renderer = QSvgRenderer(svg_bytes)
+        
+        pixmap = QPixmap(size, size)
+        pixmap.fill(Qt.GlobalColor.transparent)
+        
+        painter = QPainter(pixmap)
+        renderer.render(painter)
+        painter.end()
+        
+        return QIcon(pixmap)
+    except Exception as e:
+        print(f"Erro ao carregar ícone {svg_filename}: {e}")
+        return QIcon()
 
 
 class PaddedSpinBox(QSpinBox):
@@ -320,9 +356,26 @@ class TimeRangeWidget(QWidget):
         
         # End time or running indicator
         if self.card.is_running:
-            running_label = QLabel("◷ In Progress...")
-            running_label.setObjectName("runningLabel")
-            layout.addWidget(running_label)
+            # Ícone de alarme + texto "In Progress"
+            running_container = QWidget()
+            running_layout = QHBoxLayout()
+            running_layout.setContentsMargins(0, 0, 0, 0)
+            running_layout.setSpacing(6)
+            running_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            running_container.setLayout(running_layout)
+            
+            # Ícone de alarme
+            running_icon = QLabel()
+            alarm_icon = create_colored_icon("alarm-svgrepo-com.svg", "#6BFF50", 16)
+            running_icon.setPixmap(alarm_icon.pixmap(QSize(16, 16)))
+            running_layout.addWidget(running_icon)
+            
+            # Texto "In Progress..."
+            running_text = QLabel("Working...")
+            running_text.setObjectName("runningLabel")
+            running_layout.addWidget(running_text)
+            
+            layout.addWidget(running_container)
         else:
             self.end_field = EditableTimeLabel("End", self.card.end_time or "")
             self.end_field.time_changed.connect(self.on_end_time_changed)

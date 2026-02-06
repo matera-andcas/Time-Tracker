@@ -68,14 +68,22 @@ class MainWindow(QMainWindow):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         
+        # Layout principal sem margens (header ocupará toda largura)
         main_layout = QVBoxLayout()
-        main_layout.setContentsMargins(20, 20, 20, 20)
-        main_layout.setSpacing(20)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
         central_widget.setLayout(main_layout)
         
-        # Header section
+        # Header section (ocupa toda a largura)
         header_widget = self.create_header()
         main_layout.addWidget(header_widget)
+        
+        # Container para conteúdo com margens
+        content_container = QWidget()
+        content_layout = QVBoxLayout()
+        content_layout.setContentsMargins(20, 20, 20, 20)
+        content_layout.setSpacing(20)
+        content_container.setLayout(content_layout)
         
         # Cards table
         self.table = QTableWidget()
@@ -108,25 +116,34 @@ class MainWindow(QMainWindow):
         self.table.setColumnWidth(4, 140)
         self.table.setColumnWidth(5, 50)
         
-        main_layout.addWidget(self.table, 1)
+        content_layout.addWidget(self.table, 1)
         
         # Action bar
         action_bar = self.create_action_bar()
-        main_layout.addLayout(action_bar)
+        content_layout.addLayout(action_bar)
+        
+        # Adiciona o container de conteúdo ao layout principal
+        main_layout.addWidget(content_container, 1)
         
         self.apply_theme()
     
     def create_header(self) -> QWidget:
         """Cria o cabeçalho da aplicação"""
-        # Container principal do header
+        # Container principal do header (sem margens para linha ocupar toda largura)
         header_container = QWidget()
         header_container.setObjectName("mainWindowHeader")
         
-        container_layout = QVBoxLayout()
-        container_layout.setContentsMargins(20, 16, 20, 16)
-        container_layout.setSpacing(0)
-        header_container.setLayout(container_layout)
-
+        main_header_layout = QVBoxLayout()
+        main_header_layout.setContentsMargins(0, 0, 0, 0)
+        main_header_layout.setSpacing(0)
+        header_container.setLayout(main_header_layout)
+        
+        # Widget de conteúdo com margens
+        content_widget = QWidget()
+        content_layout = QVBoxLayout()
+        content_layout.setContentsMargins(20, 16, 20, 16)
+        content_layout.setSpacing(0)
+        content_widget.setLayout(content_layout)
         
         # Layout horizontal com conteúdo do header
         header_layout = QHBoxLayout()
@@ -140,7 +157,7 @@ class MainWindow(QMainWindow):
         title_label.setObjectName("titleLabel")
         title_container.addWidget(title_label)
         
-        subtitle_label = QLabel("Track your tasks and manage time efficiently")
+        subtitle_label = QLabel("Acompanhe suas tarefas e gerencie seu tempo com eficiência")
         subtitle_label.setObjectName("subtitleLabel")
         title_container.addWidget(subtitle_label)
         
@@ -177,7 +194,14 @@ class MainWindow(QMainWindow):
         self.theme_btn.setIconSize(QSize(24, 24))
         header_layout.addWidget(self.theme_btn)
         
-        container_layout.addLayout(header_layout)
+        content_layout.addLayout(header_layout)
+        main_header_layout.addWidget(content_widget)
+        
+        # Linha verde decorativa no final do header (ocupa toda a largura)
+        green_line = QWidget()
+        green_line.setFixedHeight(4)
+        green_line.setStyleSheet("background-color: #6BFF50;")
+        main_header_layout.addWidget(green_line)
         
         return header_container
     
@@ -330,9 +354,26 @@ class MainWindow(QMainWindow):
             end_label.setObjectName("timeRangeLabel")
             layout.addWidget(end_label)
         elif card.is_running:
-            running_label = QLabel("◷ In Progress...")
-            running_label.setObjectName("runningLabel")
-            layout.addWidget(running_label)
+            # Ícone de alarme + texto "In Progress"
+            running_container = QWidget()
+            running_layout = QHBoxLayout()
+            running_layout.setContentsMargins(0, 0, 0, 0)
+            running_layout.setSpacing(2)
+            running_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            running_container.setLayout(running_layout)
+            
+            # Ícone de alarme
+            running_icon = QLabel()
+            alarm_icon = create_colored_icon("alarm-svgrepo-com.svg", "#28a745", 14)
+            running_icon.setPixmap(alarm_icon.pixmap(QSize(14, 14)))
+            running_layout.addWidget(running_icon)
+            
+            # Texto "In Progress..."
+            running_text = QLabel("Em Progresso...")
+            running_text.setObjectName("runningLabel")
+            running_layout.addWidget(running_text)
+            
+            layout.addWidget(running_container)
         
         return widget
     def create_controls_widget(self, card, on_play_clicked, on_pause_clicked) -> QWidget:

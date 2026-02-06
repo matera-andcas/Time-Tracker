@@ -86,21 +86,37 @@ class NotesDialog(QDialog):
     
     def create_header(self) -> QWidget:
         """Cria o cabeçalho do diálogo"""
+        # Container principal sem margens para linha ocupar toda largura
         header = QWidget()
         header.setObjectName("notesDialogHeader")
         
-        layout = QVBoxLayout()
-        layout.setContentsMargins(24, 20, 24, 20)
-        layout.setSpacing(4)
-        header.setLayout(layout)
+        main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+        header.setLayout(main_layout)
+        
+        # Widget de conteúdo com margens
+        content_widget = QWidget()
+        content_layout = QVBoxLayout()
+        content_layout.setContentsMargins(24, 20, 24, 20)
+        content_layout.setSpacing(4)
+        content_widget.setLayout(content_layout)
         
         title = QLabel("Notes")
         title.setObjectName("notesDialogTitle")
-        layout.addWidget(title)
+        content_layout.addWidget(title)
         
-        subtitle = QLabel("Manage your tags and descriptions")
+        subtitle = QLabel("Gerencie suas tags e descrições")
         subtitle.setObjectName("notesDialogSubtitle")
-        layout.addWidget(subtitle)
+        content_layout.addWidget(subtitle)
+        
+        main_layout.addWidget(content_widget)
+        
+        # Linha verde decorativa no final do header
+        green_line = QWidget()
+        green_line.setFixedHeight(2)
+        green_line.setStyleSheet("background-color: #6BFF50;")
+        main_layout.addWidget(green_line)
         
         return header
     
@@ -249,16 +265,32 @@ class NotesDialog(QDialog):
     def on_delete_note(self, row: int):
         """Deleta uma nota"""
         if 0 <= row < len(self.notes):
-            # Confirmação
+            # Confirmação com mesma identidade visual do delete card
             msg = QMessageBox(self)
-            msg.setWindowTitle("Delete Note")
+            msg.setWindowTitle("Delete")
             msg.setText("Are you sure you want to delete this note?")
-            msg.setIcon(QMessageBox.Icon.Question)
+            msg.setIcon(QMessageBox.Icon.Warning)
             msg.setStandardButtons(
                 QMessageBox.StandardButton.Yes | 
                 QMessageBox.StandardButton.No
             )
-            msg.setDefaultButton(QMessageBox.StandardButton.No)
+            msg.setDefaultButton(QMessageBox.StandardButton.Yes)
+            
+            # Customiza os botões para seguir o padrão da aplicação
+            yes_btn = msg.button(QMessageBox.StandardButton.Yes)
+            no_btn = msg.button(QMessageBox.StandardButton.No)
+            yes_btn.setText("Excluir")
+            no_btn.setText("Cancelar")
+            yes_btn.setObjectName("deleteConfirmButton")
+            
+            # Remover ícones dos botões
+            empty_icon = yes_btn.style().standardIcon(yes_btn.style().StandardPixmap.SP_CustomBase)
+            yes_btn.setIcon(empty_icon)
+            no_btn.setIcon(empty_icon)
+            
+            # Forçar aplicação do stylesheet
+            yes_btn.style().unpolish(yes_btn)
+            yes_btn.style().polish(yes_btn)
             
             if msg.exec() == QMessageBox.StandardButton.Yes:
                 self.notes.pop(row)

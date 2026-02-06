@@ -124,21 +124,37 @@ class SettingsDialog(QDialog):
     
     def create_header(self) -> QWidget:
         """Cria o cabeçalho do diálogo"""
+        # Container principal sem margens para linha ocupar toda largura
         header = QWidget()
         header.setObjectName("settingsDialogHeader")
         
-        layout = QVBoxLayout()
-        layout.setContentsMargins(24, 20, 24, 20)
-        layout.setSpacing(4)
-        header.setLayout(layout)
+        main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+        header.setLayout(main_layout)
+        
+        # Widget de conteúdo com margens
+        content_widget = QWidget()
+        content_layout = QVBoxLayout()
+        content_layout.setContentsMargins(24, 20, 24, 20)
+        content_layout.setSpacing(4)
+        content_widget.setLayout(content_layout)
         
         title = QLabel("Settings")
         title.setObjectName("settingsDialogTitle")
-        layout.addWidget(title)
+        content_layout.addWidget(title)
         
-        subtitle = QLabel("Configure application preferences")
+        subtitle = QLabel("Configurar preferências do aplicativo")
         subtitle.setObjectName("settingsDialogSubtitle")
-        layout.addWidget(subtitle)
+        content_layout.addWidget(subtitle)
+        
+        main_layout.addWidget(content_widget)
+        
+        # Linha verde decorativa no final do header
+        green_line = QWidget()
+        green_line.setFixedHeight(2)
+        green_line.setStyleSheet("background-color: #6BFF50;")
+        main_layout.addWidget(green_line)
         
         return header
     
@@ -176,14 +192,14 @@ class SettingsDialog(QDialog):
         description_container.setLayout(description_layout)
         
         # Título da configuração
-        setting_title = QLabel("Calculate as End Time - Start Time")
+        setting_title = QLabel("Calcular como Horário de Fim - Horário de Início")
         setting_title.setObjectName("settingsOptionTitle")
         description_layout.addWidget(setting_title)
         
         # Descrição detalhada
         setting_desc = QLabel(
-            "When enabled: Duration shows the time difference between start and end times.\n"
-            "When disabled: Duration shows the accumulated time while the task is active (default)."
+            "Quando ativado: A duração mostra a diferença de tempo entre os horários de início e fim.\n"
+            "Quando desativado: A duração mostra o tempo acumulado enquanto a tarefa está ativa (padrão)."
         )
         setting_desc.setObjectName("settingsHelpText")
         setting_desc.setWordWrap(True)
