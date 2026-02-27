@@ -1,0 +1,50 @@
+name: Sync Release to Develop
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - release/**
+
+jobs:
+  sync-to-develop:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'feature/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.base.ref }}
+
+      - name: Create PR from release to develop
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          set -e
+          EXISTING=$(gh pr list --head "$RELEASE_BRANCH" --base develop --state open --json number --jq 'if length > 0 then .[0].number else empty end')
+          if [ -n "$EXISTING" ]; then
+            echo "PR #$EXISTING already exists for $RELEASE_BRANCH → develop. Skipping."
+          else
+            gh label create automated --force || true
+            gh pr create \
+              --head "$RELEASE_BRANCH" \
+              --base develop \
+              --title "chore: sync $RELEASE_BRANCH → develop" \
+              --body "$(cat <<EOF
+          Automated PR to sync changes from \`$RELEASE_BRANCH\` into \`develop\`.
+
+          Triggered by the merge of PR #${PR_NUMBER}: **${PR_TITLE}**.
+          EOF
+          )" \
+              --label automated
+          fi
