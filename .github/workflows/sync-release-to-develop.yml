@@ -8,43 +8,93 @@ on:
       - release/**
 
 jobs:
-  sync-to-develop:
+  sync-release-to-develop:
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'feature/')
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pull-requests: write
-      issues: write
+      contents: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.base.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create PR from release to develop
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_BRANCH: ${{ github.event.pull_request.base.ref }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
+      - name: Configure git identity
         run: |
-          set -e
-          EXISTING=$(gh pr list --head "$RELEASE_BRANCH" --base develop --state open --json number --jq 'if length > 0 then .[0].number else empty end')
-          if [ -n "$EXISTING" ]; then
-            echo "PR #$EXISTING already exists for $RELEASE_BRANCH → develop. Skipping."
-          else
-            gh label create automated --force || true
-            gh pr create \
-              --head "$RELEASE_BRANCH" \
-              --base develop \
-              --title "chore: sync $RELEASE_BRANCH → develop" \
-              --body "$(cat <<EOF
-          Automated PR to sync changes from \`$RELEASE_BRANCH\` into \`develop\`.
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          Triggered by the merge of PR #${PR_NUMBER}: **${PR_TITLE}**.
-          EOF
-          )" \
-              --label automated
+      - name: Sync release changes downstream
+        env:
+          RELEASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+        run: |
+          git fetch --all
+
+          # Detect whether the target branch is a hotfix or a regular release
+          IS_HOTFIX=false
+          if echo "$RELEASE_BRANCH" | grep -qE '^release/hotfix[_-]'; then
+            IS_HOTFIX=true
           fi
+
+          if [ "$IS_HOTFIX" = "true" ]; then
+            # ── Hotfix flow ─────────────────────────────────────────────────
+            # Find the highest semver release branch (e.g. release/1.2.0)
+            LATEST_RELEASE=$(git branch -r \
+              | grep -oE 'origin/release/[0-9]+\.[0-9]+\.[0-9]+' \
+              | sed 's|origin/release/||' \
+              | sort -V \
+              | tail -1)
+
+            if [ -z "$LATEST_RELEASE" ]; then
+              echo "No regular release branch found. Nothing to do."
+              exit 0
+            fi
+
+            LATEST_RELEASE="release/$LATEST_RELEASE"
+
+            echo "Hotfix flow: $RELEASE_BRANCH → $LATEST_RELEASE → develop"
+
+            # Step 1: merge hotfix into the latest release branch
+            git checkout -B "$LATEST_RELEASE" "origin/$LATEST_RELEASE"
+            if git merge --no-ff "origin/$RELEASE_BRANCH" \
+                -m "chore: sync $RELEASE_BRANCH → $LATEST_RELEASE"; then
+              git push origin "$LATEST_RELEASE"
+              echo "✓ Merged $RELEASE_BRANCH into $LATEST_RELEASE"
+            else
+              echo "⚠ Conflict merging $RELEASE_BRANCH into $LATEST_RELEASE. Stopping."
+              git merge --abort
+              exit 0
+            fi
+
+            # Step 2: merge the updated release branch into develop.
+            # Uses the local $LATEST_RELEASE ref (not origin/) because it
+            # already contains the hotfix changes just pushed in step 1.
+            git checkout -B develop origin/develop
+            if git merge --no-ff "$LATEST_RELEASE" \
+                -m "chore: sync $LATEST_RELEASE → develop"; then
+              git push origin develop
+              echo "✓ Merged $LATEST_RELEASE into develop"
+            else
+              echo "⚠ Conflict merging $LATEST_RELEASE into develop. Stopping."
+              git merge --abort
+              exit 0
+            fi
+
+          else
+            # ── Regular release flow ─────────────────────────────────────────
+            echo "Release flow: $RELEASE_BRANCH → develop"
+
+            git checkout -B develop origin/develop
+            if git merge --no-ff "origin/$RELEASE_BRANCH" \
+                -m "chore: sync $RELEASE_BRANCH → develop"; then
+              git push origin develop
+              echo "✓ Merged $RELEASE_BRANCH into develop"
+            else
+              echo "⚠ Conflict merging $RELEASE_BRANCH into develop. Stopping."
+              git merge --abort
+              exit 0
+            fi
+          fi
+
