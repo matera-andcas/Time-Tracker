@@ -1,6 +1,7 @@
 """
 Business Logic Services
 """
+from datetime import datetime
 from typing import List, Optional
 from .models import Card
 
@@ -13,7 +14,6 @@ class CardService:
     
     def add_card(self, name: str = "") -> Card:
         """Adiciona um novo card"""
-        from datetime import datetime
         card = Card(
             name=name,
             created_date=datetime.now().strftime("%d/%m/%y")

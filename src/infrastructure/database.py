@@ -3,6 +3,7 @@ Database Layer - SQLite persistence
 """
 import sqlite3
 import os
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
@@ -71,6 +72,16 @@ class Database:
             )
         ''')
         
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS notes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tag TEXT NOT NULL,
+                description TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
         conn.commit()
         conn.close()
     
@@ -101,7 +112,6 @@ class Database:
     
     def load_cards(self) -> List[dict]:
         """Carrega todos os cards do banco"""
-        from datetime import datetime
         conn = self.get_connection()
         cursor = conn.cursor()
         
@@ -174,3 +184,99 @@ class Database:
         if row:
             return row[0]
         return default
+    
+    def save_note(self, note_id: Optional[int], tag: str, description: str) -> int:
+        """Salva ou atualiza uma nota no banco"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        if note_id is None or note_id == 0:
+            cursor.execute('''
+                INSERT INTO notes (tag, description)
+                VALUES (?, ?)
+            ''', (tag, description))
+            note_id = cursor.lastrowid
+        else:
+            cursor.execute('''
+                UPDATE notes 
+                SET tag = ?, description = ?, updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+            ''', (tag, description, note_id))
+        
+        conn.commit()
+        conn.close()
+        return note_id
+    
+    def load_notes(self) -> List[dict]:
+        """Carrega todas as notas do banco"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT id, tag, description
+            FROM notes
+            ORDER BY id
+        ''')
+        
+        notes = []
+        for row in cursor.fetchall():
+            notes.append({
+                'id': row[0],
+                'tag': row[1],
+                'description': row[2]
+            })
+        
+        conn.close()
+        return notes
+    
+    def delete_note(self, note_id: int):
+        """Remove uma nota do banco"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM notes WHERE id = ?', (note_id,))
+        conn.commit()
+        conn.close()
+    
+    def save_notes_batch(self, notes: List[dict]):
+        """Salva múltiplas notas de uma vez"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        # Primeiro, pega os IDs existentes
+        existing_ids = set()
+        for note in notes:
+            if note.get('id'):
+                existing_ids.add(note['id'])
+        
+        # Deleta notas que não estão mais na lista
+        if existing_ids:
+            placeholders = ','.join('?' * len(existing_ids))
+            cursor.execute(f'SELECT id FROM notes WHERE id NOT IN ({placeholders})', tuple(existing_ids))
+        else:
+            cursor.execute('SELECT id FROM notes')
+        
+        ids_to_delete = [row[0] for row in cursor.fetchall()]
+        for note_id in ids_to_delete:
+            cursor.execute('DELETE FROM notes WHERE id = ?', (note_id,))
+        
+        # Salva/atualiza as notas
+        for note in notes:
+            note_id = note.get('id')
+            tag = note.get('tag', '')
+            description = note.get('description', '')
+            
+            if note_id:
+                cursor.execute('''
+                    UPDATE notes 
+                    SET tag = ?, description = ?, updated_at = CURRENT_TIMESTAMP
+                    WHERE id = ?
+                ''', (tag, description, note_id))
+            else:
+                cursor.execute('''
+                    INSERT INTO notes (tag, description)
+                    VALUES (?, ?)
+                ''', (tag, description))
+                note['id'] = cursor.lastrowid
+        
+        conn.commit()
+        conn.close()
